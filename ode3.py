@@ -1,16 +1,6 @@
 """
 AAV PBPK + liver cellular fate model, smoother plotting version with apparent AAV decay.
 
-Main purpose of this version:
-1. Keep the smoother early-time plots from v2.
-2. Add explicit apparent clearance / degradation from blood, vascular compartments,
-   and interstitial compartments so extracellular AAV rises and then decays.
-3. Add a 0-48 h bell-shaped AAV exposure plot for iGEM dry-lab presentation.
-
-Important modeling note:
-The clearance parameters below are phenomenological demonstration parameters, not
-experimentally fitted AAV pharmacokinetic constants. Tune the half-lives against data
-if you later obtain measured biodistribution or qPCR/ddPCR values.
 """
 
 from __future__ import annotations

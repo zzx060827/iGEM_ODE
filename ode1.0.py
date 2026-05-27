@@ -11,21 +11,12 @@ Important modeling note:
 All kidney cellular parameters are phenomenological demonstration parameters.
 They are intended for iGEM dry-lab model structure and sensitivity analysis,
 not fitted quantitative AAV kidney PK constants.
-
-Refined version notes:
-- Default administration is a 5 min infusion so early blood exposure peaks near infusion end.
-- Output folder can be changed from the command line with --output-dir.
-- Early PBPK plots use corrected time windows and true log axes.
-- Kidney mRNA and protein are plotted separately because their magnitudes/time scales differ.
-- Scenario outputs explicitly compare filtration-limited vs basolateral-tropism renal uptake hypotheses.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Dict, Iterable, Tuple
-import argparse
-import csv
 
 import numpy as np
 from scipy.integrate import solve_ivp
@@ -97,13 +88,12 @@ DOSE_VG = 1e12
 # "infusion" gives a visually smoother early curve.
 # Set ADMINISTRATION = "bolus" to recover the original instantaneous dose style.
 ADMINISTRATION = "infusion"  # allowed: "infusion" or "bolus"
-INFUSION_DURATION_MIN = 5.0
+INFUSION_DURATION_MIN = 10.0
 
-# In this one-central-blood toy model, raw cardiac output makes vascular
-# concentrations equilibrate almost immediately. We therefore keep the raw
-# physiological flow fractions in the parameter table, but use Q_SCALE only as
-# an effective central-organ exchange throttle. Organ permeability barriers are
-# still represented explicitly by PS_* terms.
+# In this one-central-blood toy model, using raw CO makes all vascular
+# concentrations equilibrate within seconds. Q_SCALE converts CO into an
+# effective central-organ exchange rate. For the original raw-flow behavior,
+# set Q_SCALE = 1.0. For smoother iGEM-demo curves, try 0.01 to 0.10.
 Q_SCALE = 0.05
 
 # ------------------------------------------------------------------
@@ -121,8 +111,7 @@ PLOT_DECAY_WINDOW_H = 48.0
 
 SAVE_FIGURES = True
 SHOW_FIGURES = False
-OUTPUT_DIR_NAME = "aav_pbpk_qsp_spatial_outputs"
-OUTPUT_DIR = Path(OUTPUT_DIR_NAME)
+OUTPUT_DIR = Path("aav_pbpk_bell_outputs")
 
 # New in the refined version:
 # - "mechanistic" keeps the bell-shaped exposure but assigns clearance to
@@ -230,15 +219,6 @@ def make_params() -> Dict[str, float | str]:
         # Effective organ blood-flow-like exchange rates, mL/h
         "CO": co,
         "Q_scale": q_scale,
-        # Raw organ flow allocation retained for transparent physiology/QSP reporting.
-        "Q_raw_lung": co,
-        "Q_raw_liver": 0.25 * co,
-        "Q_raw_spleen": 0.06 * co,
-        "Q_raw_kidney": 0.20 * co,
-        "Q_raw_heart": 0.05 * co,
-        "Q_raw_muscle": 0.15 * co,
-        "Q_raw_rest": 0.14 * co,
-        # Effective exchange flow used by this 0D central-blood demo.
         "Q_lung": q_scale * co,
         "Q_liver": q_scale * 0.25 * co,
         "Q_spleen": q_scale * 0.06 * co,
@@ -860,133 +840,101 @@ def mass_balance_error(sol: SimpleSolution) -> np.ndarray:
     return (total_accounted_aav(sol) - sol.y[IDX["Dose_in"]]) / delivered
 
 
-def annotate_peak(ax, t: np.ndarray, y: np.ndarray, label: str, time_unit: str = "h") -> None:
-    """Mark the peak of a curve without disturbing the data scale."""
-    y = np.asarray(y, dtype=float)
-    t = np.asarray(t, dtype=float)
-    valid = np.isfinite(y)
-    if not np.any(valid):
-        return
-    idx_valid = np.where(valid)[0]
-    idx_peak = idx_valid[int(np.nanargmax(y[valid]))]
-    ax.scatter([t[idx_peak]], [y[idx_peak]], s=30, zorder=5)
-    ax.annotate(
-        f"{label} peak\n{t[idx_peak]:.2g} {time_unit}",
-        xy=(t[idx_peak], y[idx_peak]),
-        xytext=(6, -18),
-        textcoords="offset points",
-        fontsize=8,
-        va="top",
-    )
-
-
 def plot_bell_shaped_aav_decay(sol_long: SimpleSolution, p: Dict[str, float | str]) -> None:
     """0-48 h extracellular AAV profile showing rise, peak, and decay."""
-    t_h_all = sol_long.t
-    mask = t_h_all <= PLOT_DECAY_WINDOW_H
-    t_h = t_h_all[mask]
+    t_h = sol_long.t
+    mask = t_h <= PLOT_DECAY_WINDOW_H
+    t_h = t_h[mask]
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    plt.figure(figsize=(14, 6))
 
-    ax = axes[0]
+    # Concentration profiles: blood + representative tissue ISF compartments.
+    plt.subplot(1, 2, 1)
     C_blood = concentration(sol_long, "A_blood", float(p["V_blood"]))[mask]
-    ax.plot(t_h, log_safe(C_blood), label="blood", color="black", linestyle="--", linewidth=2.2)
+    plt.plot(t_h, C_blood, label="blood", color="black", linestyle="--", linewidth=2.2)
 
     representative_organs = ["liver", "spleen", "kidney", "muscle"]
     for organ in representative_organs:
         C_isf = concentration(sol_long, f"A_{organ}_isf", float(p[f"V_{organ}_isf"]))[mask]
-        ax.plot(t_h, log_safe(C_isf), label=f"{organ}_ISF", color=COLORS[organ], linewidth=1.9)
+        plt.plot(t_h, C_isf, label=f"{organ}_ISF", color=COLORS[organ], linewidth=1.9)
 
-    annotate_peak(ax, t_h, C_blood, "blood", "h")
-    ax.set_yscale("log")
-    ax.set_xlim(0.0, PLOT_DECAY_WINDOW_H)
-    ax.set_xlabel("Time after dosing (h)")
-    ax.set_ylabel("AAV concentration (vg/mL, log scale)")
-    ax.set_title("Extracellular AAV exposure: rise then clearance")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+    plt.xlabel("Time (h)")
+    plt.ylabel("AAV concentration (vg/mL)")
+    plt.title("Extracellular AAV exposure, 0-48 h")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
-    ax = axes[1]
+    # Total extracellular amount: confirms that the body-level AAV burden decays.
+    plt.subplot(1, 2, 2)
     total = total_extracellular_aav(sol_long)[mask]
-    ax.plot(t_h, log_safe(total), color="black", linewidth=2.2)
-    annotate_peak(ax, t_h, total, "total", "h")
-    ax.set_yscale("log")
-    ax.set_xlim(0.0, PLOT_DECAY_WINDOW_H)
-    ax.set_xlabel("Time after dosing (h)")
-    ax.set_ylabel("Total extracellular AAV amount (vg, log scale)")
-    ax.set_title("Body-level extracellular burden decays after dosing")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
+    plt.plot(t_h, total, color="black", linewidth=2.2)
+    plt.xlabel("Time (h)")
+    plt.ylabel("Total extracellular AAV amount (vg)")
+    plt.title("Total extracellular AAV decays after dosing")
+    plt.grid(True, linestyle="--", alpha=0.35)
 
     plt.tight_layout()
     save_or_show("03_bell_shaped_aav_decay_48h.png")
 
 
 def plot_short_distribution(sol_short: SimpleSolution, p: Dict[str, float | str]) -> None:
-    """Early exposure plots corrected for a 5 min infusion peak and true log axes."""
+    # Linear-axis early view, useful for seeing smooth kinetics.
     t_min = sol_short.t * 60.0
-    t_inf_min = float(p["T_inf_h"]) * 60.0
+    plt.figure(figsize=(14, 6))
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
-
-    ax = axes[0]
-    C_blood = concentration(sol_short, "A_blood", float(p["V_blood"]))
-    ax.plot(t_min, C_blood, label="blood", color="black", linestyle="--", linewidth=2.2)
-    for organ in ["liver", "kidney", "spleen", "lung"]:
+    plt.subplot(1, 2, 1)
+    for organ in ORGANS:
         C_v = concentration(sol_short, f"A_{organ}_v", float(p[f"V_{organ}_v"]))
-        ax.plot(t_min, C_v, label=f"{organ}_vascular", color=COLORS[organ], linewidth=1.8)
-    ax.axvline(t_inf_min, linestyle=":", linewidth=1.5, label=f"infusion end = {t_inf_min:.0f} min")
-    early_mask = t_min <= 15.0
-    annotate_peak(ax, t_min[early_mask], C_blood[early_mask], "blood", "min")
-    ax.set_xlim(0, 15)
-    ax.set_xlabel("Time after dosing (min)")
-    ax.set_ylabel("AAV concentration (vg/mL)")
-    ax.set_title("Early vascular exposure, 0-15 min")
-    ax.grid(True, linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+        plt.plot(t_min, C_v, label=f"{organ}_vascular", color=COLORS[organ], linewidth=1.8)
+    C_blood = concentration(sol_short, "A_blood", float(p["V_blood"]))
+    plt.plot(t_min, C_blood, label="blood", color="black", linestyle="--", linewidth=2.0)
+    plt.xlim(0, 30)
+    plt.xlabel("Time (min)")
+    plt.ylabel("AAV concentration (vg/mL)")
+    plt.title("Vascular AAV concentrations, first 30 min")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
-    ax = axes[1]
-    for organ in ["liver", "kidney", "spleen", "muscle"]:
+    plt.subplot(1, 2, 2)
+    for organ in ORGANS:
         C_isf = concentration(sol_short, f"A_{organ}_isf", float(p[f"V_{organ}_isf"]))
-        ax.plot(t_min, C_isf, label=f"{organ}_ISF", color=COLORS[organ], linewidth=1.8)
-    ax.axvline(t_inf_min, linestyle=":", linewidth=1.5, label=f"infusion end = {t_inf_min:.0f} min")
-    ax.set_xlim(0, 30)
-    ax.set_xlabel("Time after dosing (min)")
-    ax.set_ylabel("AAV concentration (vg/mL)")
-    ax.set_title("Interstitial entry is delayed relative to blood")
-    ax.grid(True, linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+        plt.plot(t_min, C_isf, label=f"{organ}_ISF", color=COLORS[organ], linewidth=1.8)
+    plt.xlim(0, 30)
+    plt.xlabel("Time (min)")
+    plt.ylabel("AAV concentration (vg/mL)")
+    plt.title("Interstitial AAV concentrations, first 30 min")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
     plt.tight_layout()
-    save_or_show("01_early_distribution_linear_15to30min.png")
+    save_or_show("01_short_distribution_linear_30min.png")
 
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    # Log-axis 0 to 2 h view. Zero values become NaN, not floor = 1.
+    plt.figure(figsize=(14, 6))
 
-    ax = axes[0]
+    plt.subplot(1, 2, 1)
     for organ in ORGANS:
         C_v = concentration(sol_short, f"A_{organ}_v", float(p[f"V_{organ}_v"]))
-        ax.plot(sol_short.t, log_safe(C_v), label=f"{organ}_vascular", color=COLORS[organ], linewidth=1.7)
-    ax.plot(sol_short.t, log_safe(C_blood), label="blood", color="black", linestyle="--", linewidth=2.0)
-    ax.axvline(float(p["T_inf_h"]), linestyle=":", linewidth=1.3)
-    ax.set_yscale("log")
-    ax.set_xlim(0, 2.0)
-    ax.set_xlabel("Time after dosing (h)")
-    ax.set_ylabel("AAV concentration (vg/mL, log scale)")
-    ax.set_title("Vascular distribution, 0-2 h")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+        plt.plot(sol_short.t, log_safe(C_v), label=f"{organ}_vascular", color=COLORS[organ], linewidth=1.8)
+    C_blood = concentration(sol_short, "A_blood", float(p["V_blood"]))
+    plt.plot(sol_short.t, log_safe(C_blood), label="blood", color="black", linestyle="--", linewidth=2.0)
+    #plt.yscale("log")
+    plt.xlabel("Time (h)")
+    plt.ylabel("AAV concentration (vg/mL)")
+    plt.title("Vascular AAV concentrations, 0-2 h")
+    plt.grid(True, which="both", linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
-    ax = axes[1]
+    plt.subplot(1, 2, 2)
     for organ in ORGANS:
         C_isf = concentration(sol_short, f"A_{organ}_isf", float(p[f"V_{organ}_isf"]))
-        ax.plot(sol_short.t, log_safe(C_isf), label=f"{organ}_ISF", color=COLORS[organ], linewidth=1.7)
-    ax.axvline(float(p["T_inf_h"]), linestyle=":", linewidth=1.3)
-    ax.set_yscale("log")
-    ax.set_xlim(0, 2.0)
-    ax.set_xlabel("Time after dosing (h)")
-    ax.set_ylabel("AAV concentration (vg/mL, log scale)")
-    ax.set_title("Permeability-limited ISF distribution, 0-2 h")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+        plt.plot(sol_short.t, log_safe(C_isf), label=f"{organ}_ISF", color=COLORS[organ], linewidth=1.8)
+    #plt.yscale("log")
+    plt.xlabel("Time (h)")
+    plt.ylabel("AAV concentration (vg/mL)")
+    plt.title("Interstitial AAV concentrations, 0-2 h")
+    plt.grid(True, which="both", linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
     plt.tight_layout()
     save_or_show("02_short_distribution_log_2h.png")
@@ -1033,118 +981,50 @@ def plot_long_states(sol_long: SimpleSolution, p: Dict[str, float | str]) -> Non
     save_or_show("05_antibody_56d.png")
 
 
-def auto_ylim(ax, values: Iterable[np.ndarray], pad: float = 0.08, log_scale: bool = False) -> None:
-    """Set pleasant y-limits for plots with very different state magnitudes."""
-    data = np.concatenate([np.asarray(v, dtype=float).ravel() for v in values])
-    data = data[np.isfinite(data)]
-    if log_scale:
-        data = data[data > 0]
-    if data.size == 0:
-        return
-    ymin = float(np.nanmin(data))
-    ymax = float(np.nanmax(data))
-    if ymax <= ymin:
-        ymax = ymin + 1.0
-    if log_scale:
-        ax.set_ylim(max(ymin / 2.0, 1e-30), ymax * 2.0)
-    else:
-        span = ymax - ymin
-        ax.set_ylim(max(0.0, ymin - pad * span), ymax + pad * span)
-
-
 def plot_kidney_module(sol_long: SimpleSolution, p: Dict[str, float | str]) -> None:
     """Plot multilevel kidney proximal-tubule uptake and expression."""
-    t_h = sol_long.t
     t_day = sol_long.t / 24.0
 
-    fig, axes = plt.subplots(2, 3, figsize=(18, 9))
-    axes = axes.ravel()
+    plt.figure(figsize=(16, 8))
 
-    ax = axes[0]
-    mask_h8 = t_h <= 8.0
+    plt.subplot(2, 2, 1)
     kidney_states = ["K_filtrate", "K_pt_lumen", "K_bound_apical", "K_bound_bsl"]
-    plotted = []
     for state in kidney_states:
-        y = log_safe(sol_long.y[IDX[state]][mask_h8])
-        plotted.append(y)
-        ax.plot(t_h[mask_h8], y, label=state, linewidth=1.8)
-    ax.set_yscale("log")
-    auto_ylim(ax, plotted, log_scale=True)
-    ax.set_xlabel("Time after dosing (h)")
-    ax.set_ylabel("AAV amount (vg-equivalent, log scale)")
-    ax.set_title("Kidney accessible pools, 0-8 h")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+        plt.plot(sol_long.t, log_safe(sol_long.y[IDX[state]]), label=state, linewidth=1.8)
+    plt.xlabel("Time (h)")
+    plt.ylabel("AAV amount (vg-equivalent)")
+    plt.title("Kidney extracellular / receptor-accessible pools")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
-    ax = axes[1]
-    mask_h72 = t_h <= 72.0
+    plt.subplot(2, 2, 2)
     intracellular_states = ["K_EE", "K_REC", "K_LE", "K_LYS", "K_CY", "K_Ncap"]
-    plotted = []
     for state in intracellular_states:
-        y = log_safe(sol_long.y[IDX[state]][mask_h72])
-        plotted.append(y)
-        ax.plot(t_h[mask_h72], y, label=state, linewidth=1.8)
-    ax.set_yscale("log")
-    auto_ylim(ax, plotted, log_scale=True)
-    ax.set_xlabel("Time after dosing (h)")
-    ax.set_ylabel("AAV amount (vg-equivalent, log scale)")
-    ax.set_title("Proximal-tubule trafficking, 0-72 h")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+        plt.plot(sol_long.t, log_safe(sol_long.y[IDX[state]]), label=state, linewidth=1.8)
+    plt.xlabel("Time (h)")
+    plt.ylabel("AAV amount (vg-equivalent)")
+    plt.title("Kidney proximal-tubule intracellular trafficking")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
-    ax = axes[2]
-    mask_d21 = t_day <= 21.0
+    plt.subplot(2, 2, 3)
     genome_states = ["K_Nss", "K_Nds", "K_Epi"]
-    plotted = []
     for state in genome_states:
-        y = log_safe(sol_long.y[IDX[state]][mask_d21])
-        plotted.append(y)
-        ax.plot(t_day[mask_d21], y, label=state, linewidth=1.8)
-    ax.set_yscale("log")
-    auto_ylim(ax, plotted, log_scale=True)
-    ax.set_xlabel("Time after dosing (day)")
-    ax.set_ylabel("Vector genome state (a.u., log scale)")
-    ax.set_title("Kidney genome processing, 0-21 d")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+        plt.plot(t_day, log_safe(sol_long.y[IDX[state]]), label=state, linewidth=1.8)
+    plt.xlabel("Time (day)")
+    plt.ylabel("Vector genome state (a.u.)")
+    plt.title("Kidney nuclear genome processing")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
-    ax = axes[3]
-    m = sol_long.y[IDX["K_M"]][mask_d21]
-    ax.plot(t_day[mask_d21], m, label="Kidney mRNA", linewidth=2.0)
-    annotate_peak(ax, t_day[mask_d21], m, "mRNA", "d")
-    auto_ylim(ax, [m], log_scale=False)
-    ax.set_xlabel("Time after dosing (day)")
-    ax.set_ylabel("mRNA (a.u.)")
-    ax.set_title("Kidney transgene mRNA")
-    ax.grid(True, linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
-
-    ax = axes[4]
-    mask_d56 = t_day <= 56.0
-    protein = sol_long.y[IDX["K_P"]][mask_d56]
-    ax.plot(t_day[mask_d56], protein, label="Kidney protein", linewidth=2.0)
-    annotate_peak(ax, t_day[mask_d56], protein, "protein", "d")
-    auto_ylim(ax, [protein], log_scale=False)
-    ax.set_xlabel("Time after dosing (day)")
-    ax.set_ylabel("Protein output (a.u.)")
-    ax.set_title("Kidney transgene protein")
-    ax.grid(True, linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
-
-    ax = axes[5]
-    urine = sol_long.y[IDX["K_Urine"]]
-    deg = sol_long.y[IDX["K_Deg"]]
-    kidney_vector = total_kidney_vector_aav(sol_long)
-    ax.plot(t_day, log_safe(kidney_vector), label="kidney retained vector", linewidth=2.0)
-    ax.plot(t_day, log_safe(urine), label="urine sink", linewidth=1.8)
-    ax.plot(t_day, log_safe(deg), label="intracellular degradation", linewidth=1.8)
-    ax.set_yscale("log")
-    ax.set_xlim(0, 56.0)
-    ax.set_xlabel("Time after dosing (day)")
-    ax.set_ylabel("AAV amount (vg-equivalent, log scale)")
-    ax.set_title("Kidney retention vs loss routes")
-    ax.grid(True, which="both", linestyle="--", alpha=0.35)
-    ax.legend(fontsize=8)
+    plt.subplot(2, 2, 4)
+    plt.plot(t_day, sol_long.y[IDX["K_M"]], label="Kidney mRNA", linewidth=2.0)
+    plt.plot(t_day, sol_long.y[IDX["K_P"]], label="Kidney protein", linewidth=2.0)
+    plt.xlabel("Time (day)")
+    plt.ylabel("Expression output (a.u.)")
+    plt.title("Kidney transgene expression")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
     plt.tight_layout()
     save_or_show("06_kidney_multilevel_module.png")
@@ -1208,34 +1088,24 @@ def plot_mass_balance(sol_long: SimpleSolution, p: Dict[str, float | str]) -> No
 
 
 def plot_design_scenarios(base_p: Dict[str, float | str], t_eval_long: np.ndarray) -> None:
-    """Compare capsid/promoter/renal-route design hypotheses without editing core code."""
+    """Compare capsid/promoter design hypotheses without editing core code."""
     scenarios = [
-        ("baseline", "baseline_AAV", "ubiquitous", {}),
-        ("liver_detargeted", "liver_detargeted", "ubiquitous", {}),
-        ("kidney_tropic", "kidney_tropic", "kidney_biased", {}),
-        ("escape_enhanced", "endosomal_escape_enhanced", "ubiquitous", {}),
-        ("renal_filtration_limited", "baseline_AAV", "ubiquitous", {
-            "k_glom_filter": 0.0015,
-            "k_pt_apical_on": 1.0e-11,
-            "Bmax_pt_apical": 2.5e7,
-        }),
-        ("renal_basolateral_tropism", "kidney_tropic", "kidney_biased", {
-            "k_glom_filter": 0.0015,
-            "Bmax_pt_bsl": 6.0e7,
-            "k_pt_bsl_on": 1.6e-11,
-            "k_pt_bsl_int": 0.16,
-            "k_kidney_escape": 0.012,
-        }),
+        ("baseline", "baseline_AAV", "ubiquitous"),
+        ("liver_detargeted", "liver_detargeted", "ubiquitous"),
+        ("kidney_tropic", "kidney_tropic", "kidney_biased"),
+        ("escape_enhanced", "endosomal_escape_enhanced", "ubiquitous"),
     ]
 
     rows = []
-    fig, axes = plt.subplots(1, 2, figsize=(15, 5))
-    for label, capsid, promoter, overrides in scenarios:
-        p = apply_design_preset(base_p, capsid=capsid, promoter=promoter, overrides=overrides)
+    plt.figure(figsize=(15, 5))
+    for label, capsid, promoter in scenarios:
+        p = apply_design_preset(base_p, capsid=capsid, promoter=promoter)
         sol = solve_model(t_eval_long, make_initial_condition(p), p, post_infusion_max_step=1.0)
         t_day = sol.t / 24.0
-        axes[0].plot(t_day, log_safe(sol.y[IDX["Epi"]]), label=label, linewidth=2.0)
-        axes[1].plot(t_day, log_safe(sol.y[IDX["K_Epi"]]), label=label, linewidth=2.0)
+        plt.subplot(1, 2, 1)
+        plt.plot(t_day, log_safe(sol.y[IDX["Epi"]]), label=label, linewidth=2.0)
+        plt.subplot(1, 2, 2)
+        plt.plot(t_day, log_safe(sol.y[IDX["K_Epi"]]), label=label, linewidth=2.0)
 
         C_kidney_isf = concentration(sol, "A_kidney_isf", float(p["V_kidney_isf"]))
         C_liver_isf = concentration(sol, "A_liver_isf", float(p["V_liver_isf"]))
@@ -1249,24 +1119,22 @@ def plot_design_scenarios(base_p: Dict[str, float | str], t_eval_long: np.ndarra
             "peak_kidney_protein": float(np.nanmax(sol.y[IDX["K_P"]])),
             "auc_liver_isf": auc_trapz(C_liver_isf, sol.t),
             "auc_kidney_isf": auc_trapz(C_kidney_isf, sol.t),
-            "final_urine_loss": float(sol.y[IDX["K_Urine"], -1]),
-            "final_kidney_degradation": float(sol.y[IDX["K_Deg"], -1]),
             "final_mass_balance_error": float(mass_balance_error(sol)[-1]),
         })
 
-    axes[0].set_yscale("log")
-    axes[0].set_xlabel("Time after dosing (day)")
-    axes[0].set_ylabel("Liver episome (a.u., log scale)")
-    axes[0].set_title("Capsid/promoter scenario: liver")
-    axes[0].grid(True, which="both", linestyle="--", alpha=0.35)
-    axes[0].legend(fontsize=8)
+    plt.subplot(1, 2, 1)
+    plt.xlabel("Time (day)")
+    plt.ylabel("Liver episome (a.u.)")
+    plt.title("Capsid/promoter scenario: liver")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
-    axes[1].set_yscale("log")
-    axes[1].set_xlabel("Time after dosing (day)")
-    axes[1].set_ylabel("Kidney episome (a.u., log scale)")
-    axes[1].set_title("Capsid/promoter/renal-route scenario: kidney")
-    axes[1].grid(True, which="both", linestyle="--", alpha=0.35)
-    axes[1].legend(fontsize=8)
+    plt.subplot(1, 2, 2)
+    plt.xlabel("Time (day)")
+    plt.ylabel("Kidney episome (a.u.)")
+    plt.title("Capsid/promoter scenario: kidney")
+    plt.grid(True, linestyle="--", alpha=0.35)
+    plt.legend(fontsize=8)
 
     plt.tight_layout()
     save_or_show("09_design_scenario_comparison.png")
@@ -1275,10 +1143,10 @@ def plot_design_scenarios(base_p: Dict[str, float | str], t_eval_long: np.ndarra
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         metrics_path = OUTPUT_DIR / "09_design_scenario_metrics.csv"
         header = list(rows[0].keys())
-        with metrics_path.open("w", encoding="utf-8", newline="") as f:
-            writer = csv.DictWriter(f, fieldnames=header)
-            writer.writeheader()
-            writer.writerows(rows)
+        with metrics_path.open("w", encoding="utf-8") as f:
+            f.write(",".join(header) + "\n")
+            for row in rows:
+                f.write(",".join(str(row[key]) for key in header) + "\n")
 
 
 def plot_spatial_pk_demo(sol_long: SimpleSolution, p: Dict[str, float | str]) -> None:
@@ -1356,70 +1224,7 @@ def auc_trapz(y: np.ndarray, x: np.ndarray) -> float:
     return float(np.trapz(y, x))
 
 
-def time_of_peak(t: np.ndarray, y: np.ndarray) -> float:
-    y = np.asarray(y, dtype=float)
-    if y.size == 0 or not np.any(np.isfinite(y)):
-        return float("nan")
-    return float(t[int(np.nanargmax(y))])
-
-
-def collect_summary_metrics(sol_long: SimpleSolution, p: Dict[str, float | str]) -> Dict[str, float | str]:
-    """Collect PI-facing metrics in a CSV-friendly dictionary."""
-    C_blood_long = concentration(sol_long, "A_blood", float(p["V_blood"]))
-    C_kidney_isf = concentration(sol_long, "A_kidney_isf", float(p["V_kidney_isf"]))
-    C_liver_isf = concentration(sol_long, "A_liver_isf", float(p["V_liver_isf"]))
-    auc_kidney_isf = auc_trapz(C_kidney_isf, sol_long.t)
-    auc_liver_isf = auc_trapz(C_liver_isf, sol_long.t)
-    total_aav = total_extracellular_aav(sol_long)
-
-    return {
-        "administration": str(p["administration"]),
-        "dose_vg": float(p["dose_vg"]),
-        "infusion_duration_min": float(p["T_inf_h"]) * 60.0,
-        "q_scale_effective_exchange": float(p["Q_scale"]),
-        "auc_blood_vg_h_per_ml": auc_trapz(C_blood_long, sol_long.t),
-        "cmax_blood_vg_per_ml": float(np.nanmax(C_blood_long)),
-        "tmax_blood_min": 60.0 * time_of_peak(sol_long.t, C_blood_long),
-        "final_fraction_extracellular_remaining": float(total_aav[-1] / max(float(p["dose_vg"]), 1e-30)),
-        "auc_liver_isf_vg_h_per_ml": auc_liver_isf,
-        "auc_kidney_isf_vg_h_per_ml": auc_kidney_isf,
-        "kidney_liver_isf_auc_ratio": float(auc_kidney_isf / max(auc_liver_isf, 1e-30)),
-        "peak_liver_epi": float(np.nanmax(sol_long.y[IDX["Epi"]])),
-        "t_peak_liver_epi_day": time_of_peak(sol_long.t / 24.0, sol_long.y[IDX["Epi"]]),
-        "peak_liver_mrna": float(np.nanmax(sol_long.y[IDX["M"]])),
-        "peak_liver_protein": float(np.nanmax(sol_long.y[IDX["P"]])),
-        "peak_kidney_apical_bound": float(np.nanmax(sol_long.y[IDX["K_bound_apical"]])),
-        "peak_kidney_basolateral_bound": float(np.nanmax(sol_long.y[IDX["K_bound_bsl"]])),
-        "basolateral_to_apical_binding_peak_ratio": float(
-            np.nanmax(sol_long.y[IDX["K_bound_bsl"]]) / max(np.nanmax(sol_long.y[IDX["K_bound_apical"]]), 1e-30)
-        ),
-        "peak_kidney_early_endosome": float(np.nanmax(sol_long.y[IDX["K_EE"]])),
-        "peak_kidney_epi": float(np.nanmax(sol_long.y[IDX["K_Epi"]])),
-        "t_peak_kidney_epi_day": time_of_peak(sol_long.t / 24.0, sol_long.y[IDX["K_Epi"]]),
-        "peak_kidney_mrna": float(np.nanmax(sol_long.y[IDX["K_M"]])),
-        "t_peak_kidney_mrna_day": time_of_peak(sol_long.t / 24.0, sol_long.y[IDX["K_M"]]),
-        "peak_kidney_protein": float(np.nanmax(sol_long.y[IDX["K_P"]])),
-        "t_peak_kidney_protein_day": time_of_peak(sol_long.t / 24.0, sol_long.y[IDX["K_P"]]),
-        "final_urine_loss_vg_equiv": float(sol_long.y[IDX["K_Urine"], -1]),
-        "final_kidney_intracellular_degradation_vg_equiv": float(sol_long.y[IDX["K_Deg"], -1]),
-        "final_mass_balance_error": float(mass_balance_error(sol_long)[-1]),
-        "peak_antibody_au": float(np.nanmax(sol_long.y[IDX["Ab"]])),
-    }
-
-
-def write_summary_metrics_csv(metrics: Dict[str, float | str], filename: str = "00_summary_metrics.csv") -> None:
-    if not SAVE_FIGURES:
-        return
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    with (OUTPUT_DIR / filename).open("w", encoding="utf-8", newline="") as f:
-        writer = csv.writer(f)
-        writer.writerow(["metric", "value"])
-        for key, value in metrics.items():
-            writer.writerow([key, value])
-
-
 def print_metrics(sol_long: SimpleSolution, p: Dict[str, float | str]) -> None:
-    metrics = collect_summary_metrics(sol_long, p)
     C_blood_long = concentration(sol_long, "A_blood", float(p["V_blood"]))
     print("----- Simulation settings -----")
     print(f"Administration: {p['administration']}")
@@ -1434,7 +1239,6 @@ def print_metrics(sol_long: SimpleSolution, p: Dict[str, float | str]) -> None:
     total_aav = total_extracellular_aav(sol_long)
     print("AUC_blood:", auc_trapz(C_blood_long, sol_long.t))
     print("Cmax_blood:", np.nanmax(C_blood_long))
-    print("Tmax_blood_min:", metrics["tmax_blood_min"])
     print("Initial total extracellular AAV:", total_aav[0])
     print("Final total extracellular AAV:", total_aav[-1])
     print("Fraction extracellular AAV remaining at final time:", total_aav[-1] / max(float(p["dose_vg"]), 1e-30))
@@ -1465,58 +1269,12 @@ def print_metrics(sol_long: SimpleSolution, p: Dict[str, float | str]) -> None:
     print("Cumulative kidney intracellular degradation/loss:", sol_long.y[IDX["K_Deg"], -1])
     print("Kidney entry efficiency (Peak K_Epi / AUC kidney ISF):", np.nanmax(sol_long.y[IDX["K_Epi"]]) / max(auc_kidney_isf, 1e-30))
     print("Peak antibody:", np.nanmax(sol_long.y[IDX["Ab"]]))
-    print("Final mass-balance error:", metrics["final_mass_balance_error"])
-
-
-def parse_cli_args() -> argparse.Namespace:
-    """Small command-line interface so output folder and common settings are editable."""
-    parser = argparse.ArgumentParser(
-        description="AAV PBPK + liver/kidney cellular fate + spatial PK demonstration model."
-    )
-    parser.add_argument("--output-dir", type=str, default=None, help="Folder for figures and CSV outputs.")
-    parser.add_argument("--infusion-min", type=float, default=None, help="Infusion duration in minutes; default is 5 min.")
-    parser.add_argument("--dose-vg", type=float, default=None, help="Total vector dose in vg.")
-    parser.add_argument("--clearance-mode", choices=["mechanistic", "half_life_demo"], default=None)
-    parser.add_argument("--show", action="store_true", help="Display plots interactively after saving.")
-    parser.add_argument("--no-save", action="store_true", help="Do not save figures/CSV outputs.")
-    parser.add_argument("--no-scenarios", action="store_true", help="Skip capsid/promoter scenario simulations.")
-    parser.add_argument("--no-spatial", action="store_true", help="Skip 1D spatial PK demo.")
-    return parser.parse_args()
-
-
-def apply_cli_args(args: argparse.Namespace) -> None:
-    global OUTPUT_DIR, INFUSION_DURATION_MIN, DOSE_VG, SAVE_FIGURES, SHOW_FIGURES
-    global RUN_DESIGN_SCENARIOS, RUN_SPATIAL_PK_DEMO, CLEARANCE_MODE
-
-    if args.output_dir:
-        OUTPUT_DIR = Path(args.output_dir)
-    if args.infusion_min is not None:
-        if args.infusion_min <= 0:
-            raise ValueError("--infusion-min must be positive.")
-        INFUSION_DURATION_MIN = float(args.infusion_min)
-    if args.dose_vg is not None:
-        if args.dose_vg <= 0:
-            raise ValueError("--dose-vg must be positive.")
-        DOSE_VG = float(args.dose_vg)
-    if args.clearance_mode:
-        CLEARANCE_MODE = args.clearance_mode
-    if args.show:
-        SHOW_FIGURES = True
-    if args.no_save:
-        SAVE_FIGURES = False
-    if args.no_scenarios:
-        RUN_DESIGN_SCENARIOS = False
-    if args.no_spatial:
-        RUN_SPATIAL_PK_DEMO = False
 
 
 # ---------------------------------------------------------------------
 # Main script
 # ---------------------------------------------------------------------
 def main() -> None:
-    args = parse_cli_args()
-    apply_cli_args(args)
-
     p = make_params()
     y0 = make_initial_condition(p)
 
@@ -1536,14 +1294,10 @@ def main() -> None:
         plot_design_scenarios(p, t_eval_long)
     if RUN_SPATIAL_PK_DEMO:
         plot_spatial_pk_demo(sol_long, p)
-
-    metrics = collect_summary_metrics(sol_long, p)
-    write_summary_metrics_csv(metrics)
     print_metrics(sol_long, p)
 
     if SAVE_FIGURES:
-        print(f"\nFigures and CSV outputs saved to: {OUTPUT_DIR.resolve()}")
-
+        print(f"\nFigures saved to: {OUTPUT_DIR.resolve()}")
 
 
 if __name__ == "__main__":
