@@ -1,0 +1,25 @@
+# 编译产物
+build/
+dist/
+out/
+aav_pbpk_outputs/
+aav_pbpk_bell_outputs/
+
+# 依赖
+node_modules/
+vendor/
+
+# 缓存
+__pycache__/
+.cache/
+.pytest_cache/
+
+# IDE配置
+.vscode/
+.idea/
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+
