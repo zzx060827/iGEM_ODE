@@ -96,6 +96,13 @@ CNS_PROFILES = {
     "neural_progenitor": {"weights": (0.48, 0.37, 0.15), "cell_access": 0.58, "persistence": 0.30, "depth_mm": 1.6},
 }
 
+HEATMAP_TIME_H = np.unique(np.r_[
+    np.linspace(0.0, 2.0, 17),
+    np.linspace(2.5, 12.0, 20),
+    np.linspace(14.0, 24.0, 6),
+    np.linspace(28.0, 72.0, 12),
+])
+
 
 def trapezoid(module: dict, y: np.ndarray, x: np.ndarray) -> float:
     return module["auc_trapz"](y, x)
@@ -152,14 +159,27 @@ def run_capsid(module: dict, capsid: dict) -> dict:
     organs = {}
     for organ in module["ORGANS"]:
         amount = solution.y[module["IDX"][f"A_{organ}_isf"]]
+        vascular_amount = solution.y[module["IDX"][f"A_{organ}_v"]]
         concentration = amount / float(p[f"V_{organ}_isf"])
+        vascular_concentration = vascular_amount / float(p[f"V_{organ}_v"])
         organs[organ] = {
             "auc_amount_vg_h": trapezoid(module, amount, solution.t),
             "auc_concentration_vg_h_ml": trapezoid(module, concentration, solution.t),
             "peak_isf_amount_vg": float(np.max(amount)),
+            "peak_isf_concentration_vg_ml": float(np.max(concentration)),
             "peak_post_barrier_delivery_pct": float(100.0 * np.max(amount) / dose),
             "tmax_h": float(solution.t[int(np.argmax(amount))]),
+            "isf_amount_vg": np.interp(HEATMAP_TIME_H, solution.t, amount).tolist(),
+            "isf_concentration_vg_ml": np.interp(HEATMAP_TIME_H, solution.t, concentration).tolist(),
+            "vascular_concentration_vg_ml": np.interp(
+                HEATMAP_TIME_H, solution.t, vascular_concentration
+            ).tolist(),
         }
+    total_organ_auc = sum(metrics["auc_amount_vg_h"] for metrics in organs.values())
+    for metrics in organs.values():
+        metrics["exposure_share_pct"] = float(
+            100.0 * metrics["auc_amount_vg_h"] / max(total_organ_auc, 1e-30)
+        )
     brain_isf_amount = solution.y[module["IDX"]["A_brain_isf"]]
     cns_profiles = {
         profile_id: solve_cns_multilevel(solution.t, brain_isf_amount, dose, profile)
@@ -178,11 +198,53 @@ def run_capsid(module: dict, capsid: dict) -> dict:
             "peak_vector_rna": float(np.max(mrna)),
             "peak_vector_expression": float(np.max(protein)),
         }
+
+    native_cellular_organs = {"liver": "Liver", "kidney": "Kidney", "brain": "CNS"}
+    for organ, target_name in native_cellular_organs.items():
+        organs[organ]["peak_episome"] = cellular[target_name]["peak_epi"]
+        organs[organ]["episome_auc_vg_h"] = cellular[target_name]["auc_epi_vg_h"]
+        organs[organ]["peak_expression"] = cellular[target_name]["peak_vector_expression"]
+        organs[organ]["transduction_model"] = "native ode1.0 intracellular module"
+        organs[organ]["model_status"] = "ode-derived"
+    for organ in module["ORGANS"]:
+        if organ not in native_cellular_organs:
+            organs[organ]["peak_episome"] = None
+            organs[organ]["episome_auc_vg_h"] = None
+            organs[organ]["peak_expression"] = None
+            organs[organ]["transduction_model"] = "PBPK ISF exposure only"
+            organs[organ]["model_status"] = "exposure-only"
     return {
         "organs": organs,
         "cellular": cellular,
         "cns_profiles": cns_profiles,
         "max_mass_balance_error": float(np.max(np.abs(module["mass_balance_error"](solution)))),
+    }
+
+
+def build_organ_heatmap_payload(simulated: dict) -> dict:
+    """Serialize capsid-by-organ ODE outputs for the React anatomical map."""
+    capsids = []
+    for capsid_id, capsid_prior in CAPSID_PRIORS.items():
+        result = simulated[capsid_id]
+        capsids.append({
+            "capsid_id": capsid_id,
+            "capsid": capsid_prior["label"],
+            "evidence": capsid_prior["evidence"],
+            "species": capsid_prior["species"],
+            "source": capsid_prior["source"],
+            "max_mass_balance_error": result["max_mass_balance_error"],
+            "organs": result["organs"],
+        })
+    return {
+        "time_h": HEATMAP_TIME_H.tolist(),
+        "organs": ["brain", "lung", "heart", "liver", "spleen", "kidney", "muscle", "rest"],
+        "capsids": capsids,
+        "reference_anatomy": "human SVG projection",
+        "reference_model": "adult mouse-scale PBPK",
+        "interpretation": (
+            "Relative organ distribution demo; the anatomy is human-shaped but the current "
+            "physiology is adult mouse-scale and is not a calibrated human prediction."
+        ),
     }
 
 
@@ -343,12 +405,17 @@ def main() -> None:
     cns_profile_rows = build_cns_profile_rows(rows, simulated)
 
     payload = {
-        "schema_version": "2.0",
+        "schema_version": "2.1",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "reference_model": str(args.model),
         "reference_species": "adult mouse-scale PBPK; capsid priors retain source-species labels",
         "dose_vg": 1.0e12,
-        "model_counts": {"organ_level": len(rows), "cns_profile": len(cns_profile_rows), "total": len(rows) + len(cns_profile_rows)},
+        "model_counts": {
+            "organ_level": len(rows),
+            "cns_profile": len(cns_profile_rows),
+            "organ_heatmap": len(CAPSID_PRIORS) * len(module["ORGANS"]),
+            "total": len(rows) + len(cns_profile_rows) + len(CAPSID_PRIORS) * len(module["ORGANS"]),
+        },
         "method": {
             "delivery_efficiency": "100 * max(target organ ISF amount) / administered dose",
             "organ_specificity": "log10(target organ ISF concentration AUC / mean toxicity-weighted off-target concentration AUC)",
@@ -359,6 +426,7 @@ def main() -> None:
         },
         "results": rows,
         "cns_profile_results": cns_profile_rows,
+        "organ_heatmap": build_organ_heatmap_payload(simulated),
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
