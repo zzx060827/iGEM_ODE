@@ -1,0 +1,982 @@
+{
+  "schema_version": "1.0",
+  "generated_at": "2026-07-21T07:59:53.231Z",
+  "gene_count": 42,
+  "method": {
+    "gtex": "Median TPM from GTEx v10; modeled-organ values are medians across matching tissue subregions.",
+    "tau": "Yanai tissue-specificity index across all GTEx tissue sites; 0 is ubiquitous and 1 is highly tissue-restricted.",
+    "limitation": "Adult bulk-tissue RNA is a target-presence prior, not cell-type expression, developmental expression, disease causality, or therapeutic efficacy."
+  },
+  "sources": {
+    "gtex_api": "https://gtexportal.org/api/v2/docs",
+    "hpa_downloads": "https://www.proteinatlas.org/about/download"
+  },
+  "genes": {
+    "ANKRD11": {
+      "gencode_id": "ENSG00000167522.17",
+      "organ_median_tpm": {
+        "CNS": 10.5352,
+        "Heart": 9.1147,
+        "Liver": 5.41387,
+        "Kidney": 12.643755,
+        "Muscle": 11.5694,
+        "Lung": 26.5346
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 26.5346,
+      "top_gtex_tissue": "Cells_Cultured_fibroblasts",
+      "top_gtex_tissue_tpm": 35.7334,
+      "tissue_tau": 0.49162917817704715,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000167522"
+      }
+    },
+    "BAZ1B": {
+      "gencode_id": "ENSG00000009954.11",
+      "organ_median_tpm": {
+        "CNS": 19.5962,
+        "Heart": 13.510200000000001,
+        "Liver": 10.6852,
+        "Kidney": 16.0285,
+        "Muscle": 21.7245,
+        "Lung": 35.9154
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 35.9154,
+      "top_gtex_tissue": "Cells_EBV-transformed_lymphocytes",
+      "top_gtex_tissue_tpm": 72.2325,
+      "tissue_tau": 0.5671661569786766,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enhanced",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000009954"
+      }
+    },
+    "CHD8": {
+      "gencode_id": "ENSG00000100888.15",
+      "organ_median_tpm": {
+        "CNS": 10.2281,
+        "Heart": 6.50381,
+        "Liver": 5.05031,
+        "Kidney": 10.504135,
+        "Muscle": 9.55589,
+        "Lung": 21.7439
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 21.7439,
+      "top_gtex_tissue": "Brain_Cerebellar_Hemisphere",
+      "top_gtex_tissue_tpm": 38.6943,
+      "tissue_tau": 0.5266492519813871,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enhanced",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000100888"
+      }
+    },
+    "COMT": {
+      "gencode_id": "ENSG00000093010.15",
+      "organ_median_tpm": {
+        "CNS": 18.9831,
+        "Heart": 11.233065,
+        "Liver": 30.2852,
+        "Kidney": 22.27715,
+        "Muscle": 13.4605,
+        "Lung": 36.0975
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 36.0975,
+      "top_gtex_tissue": "Nerve_Tibial",
+      "top_gtex_tissue_tpm": 52.7303,
+      "tissue_tau": 0.5039613577943927,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Low tissue specificity",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000093010"
+      }
+    },
+    "CPLX1": {
+      "gencode_id": "ENSG00000168993.15",
+      "organ_median_tpm": {
+        "CNS": 182.69,
+        "Heart": 5.766724999999999,
+        "Liver": 5.23075,
+        "Kidney": 9.648990000000001,
+        "Muscle": 2.52252,
+        "Lung": 15.2095
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 182.69,
+      "top_gtex_tissue": "Brain_Frontal_Cortex_BA9",
+      "top_gtex_tissue_tpm": 324.905,
+      "tissue_tau": 0.8616406996762188,
+      "hpa": {
+        "tissue_specificity": "Tissue enriched",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": "9",
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000168993"
+      }
+    },
+    "CRKL": {
+      "gencode_id": "ENSG00000099942.13",
+      "organ_median_tpm": {
+        "CNS": 32.4765,
+        "Heart": 18.8352,
+        "Liver": 20.5745,
+        "Kidney": 17.6842,
+        "Muscle": 46.6676,
+        "Lung": 41.7888
+      },
+      "top_modeled_organ": "Muscle",
+      "top_modeled_organ_tpm": 46.6676,
+      "top_gtex_tissue": "Cells_EBV-transformed_lymphocytes",
+      "top_gtex_tissue_tpm": 72.9177,
+      "tissue_tau": 0.5168593147182396,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Low tissue specificity",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000099942"
+      }
+    },
+    "DGCR8": {
+      "gencode_id": "ENSG00000128191.16",
+      "organ_median_tpm": {
+        "CNS": 9.18235,
+        "Heart": 8.474335,
+        "Liver": 12.2931,
+        "Kidney": 14.25709,
+        "Muscle": 13.2737,
+        "Lung": 24.1965
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 24.1965,
+      "top_gtex_tissue": "Brain_Cerebellum",
+      "top_gtex_tissue_tpm": 81.4607,
+      "tissue_tau": 0.7133881945295487,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000128191"
+      }
+    },
+    "DYRK1A": {
+      "gencode_id": "ENSG00000157540.22",
+      "organ_median_tpm": {
+        "CNS": 5.89061,
+        "Heart": 6.117705,
+        "Liver": 3.15423,
+        "Kidney": 7.113145,
+        "Muscle": 10.5832,
+        "Lung": 13.7849
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 13.7849,
+      "top_gtex_tissue": "Uterus",
+      "top_gtex_tissue_tpm": 18.4926,
+      "tissue_tau": 0.45905650378458357,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000157540"
+      }
+    },
+    "EHMT1": {
+      "gencode_id": "ENSG00000181090.21",
+      "organ_median_tpm": {
+        "CNS": 3.49402,
+        "Heart": 2.7772699999999997,
+        "Liver": 3.78308,
+        "Kidney": 4.774955,
+        "Muscle": 5.45803,
+        "Lung": 9.82942
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 9.82942,
+      "top_gtex_tissue": "Cells_EBV-transformed_lymphocytes",
+      "top_gtex_tissue_tpm": 22.6305,
+      "tissue_tau": 0.6657142368810168,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Group enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000181090"
+      }
+    },
+    "ELN": {
+      "gencode_id": "ENSG00000049540.19",
+      "organ_median_tpm": {
+        "CNS": 6.19325,
+        "Heart": 63.424299999999995,
+        "Liver": 5.17829,
+        "Kidney": 11.683015000000001,
+        "Muscle": 7.39885,
+        "Lung": 266.15
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 266.15,
+      "top_gtex_tissue": "Artery_Aorta",
+      "top_gtex_tissue_tpm": 1692.36,
+      "tissue_tau": 0.9545292811266792,
+      "hpa": {
+        "tissue_specificity": "Tissue enriched",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": "6",
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000049540"
+      }
+    },
+    "FGFR3": {
+      "gencode_id": "ENSG00000068078.20",
+      "organ_median_tpm": {
+        "CNS": 90.3324,
+        "Heart": 3.06987,
+        "Liver": 26.6601,
+        "Kidney": 35.99595,
+        "Muscle": 0.344041,
+        "Lung": 15.0929
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 90.3324,
+      "top_gtex_tissue": "Skin_Not_Sun_Exposed_Suprapubic",
+      "top_gtex_tissue_tpm": 376.473,
+      "tissue_tau": 0.8846940070221784,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000068078"
+      }
+    },
+    "FOXP1": {
+      "gencode_id": "ENSG00000114861.24",
+      "organ_median_tpm": {
+        "CNS": 2.58451,
+        "Heart": 2.49618,
+        "Liver": 2.10126,
+        "Kidney": 2.97424,
+        "Muscle": 1.54391,
+        "Lung": 12.5115
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 12.5115,
+      "top_gtex_tissue": "Esophagus_Muscularis",
+      "top_gtex_tissue_tpm": 21.9156,
+      "tissue_tau": 0.6849979148135025,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Group enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000114861"
+      }
+    },
+    "GATA3": {
+      "gencode_id": "ENSG00000107485.18",
+      "organ_median_tpm": {
+        "CNS": 0.050299,
+        "Heart": 1.10106,
+        "Liver": 0.661415,
+        "Kidney": 26.9217,
+        "Muscle": 1.00317,
+        "Lung": 6.15941
+      },
+      "top_modeled_organ": "Kidney",
+      "top_modeled_organ_tpm": 26.9217,
+      "top_gtex_tissue": "Skin_Not_Sun_Exposed_Suprapubic",
+      "top_gtex_tissue_tpm": 262.319,
+      "tissue_tau": 0.9642105253239486,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000107485"
+      }
+    },
+    "GTF2I": {
+      "gencode_id": "ENSG00000263001.8",
+      "organ_median_tpm": {
+        "CNS": 4.57022,
+        "Heart": 3.721085,
+        "Liver": 2.05355,
+        "Kidney": 5.356045,
+        "Muscle": 8.8046,
+        "Lung": 9.54338
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 9.54338,
+      "top_gtex_tissue": "Cells_EBV-transformed_lymphocytes",
+      "top_gtex_tissue_tpm": 25.2563,
+      "tissue_tau": 0.6545223127216753,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Low tissue specificity",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000263001"
+      }
+    },
+    "GTF2IRD1": {
+      "gencode_id": "ENSG00000006704.11",
+      "organ_median_tpm": {
+        "CNS": 4.88997,
+        "Heart": 4.747059999999999,
+        "Liver": 1.76475,
+        "Kidney": 14.899495,
+        "Muscle": 27.8827,
+        "Lung": 13.3588
+      },
+      "top_modeled_organ": "Muscle",
+      "top_modeled_organ_tpm": 27.8827,
+      "top_gtex_tissue": "Pituitary",
+      "top_gtex_tissue_tpm": 36.6655,
+      "tissue_tau": 0.7191874671140907,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000006704"
+      }
+    },
+    "KCNAB2": {
+      "gencode_id": "ENSG00000069424.16",
+      "organ_median_tpm": {
+        "CNS": 30.5546,
+        "Heart": 3.593395,
+        "Liver": 1.8674,
+        "Kidney": 4.738334999999999,
+        "Muscle": 1.74636,
+        "Lung": 22.0841
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 30.5546,
+      "top_gtex_tissue": "Brain_Frontal_Cortex_BA9",
+      "top_gtex_tissue_tpm": 86.7992,
+      "tissue_tau": 0.8374191073754789,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enhanced",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000069424"
+      }
+    },
+    "LDLR": {
+      "gencode_id": "ENSG00000130164.14",
+      "organ_median_tpm": {
+        "CNS": 5.04547,
+        "Heart": 8.86346,
+        "Liver": 23.7233,
+        "Kidney": 9.709835,
+        "Muscle": 1.78676,
+        "Lung": 81.2333
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 81.2333,
+      "top_gtex_tissue": "Adrenal_Gland",
+      "top_gtex_tissue_tpm": 94.8439,
+      "tissue_tau": 0.7845483622572914,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Group enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000130164"
+      }
+    },
+    "LETM1": {
+      "gencode_id": "ENSG00000168924.15",
+      "organ_median_tpm": {
+        "CNS": 13.3023,
+        "Heart": 14.1455,
+        "Liver": 11.9233,
+        "Kidney": 17.41,
+        "Muscle": 15.7135,
+        "Lung": 21.3047
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 21.3047,
+      "top_gtex_tissue": "Testis",
+      "top_gtex_tissue_tpm": 39.8207,
+      "tissue_tau": 0.512600746999368,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enhanced",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000168924"
+      }
+    },
+    "LIMK1": {
+      "gencode_id": "ENSG00000106683.15",
+      "organ_median_tpm": {
+        "CNS": 44.1634,
+        "Heart": 5.21849,
+        "Liver": 2.28468,
+        "Kidney": 9.587775,
+        "Muscle": 12.0713,
+        "Lung": 22.0411
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 44.1634,
+      "top_gtex_tissue": "Brain_Frontal_Cortex_BA9",
+      "top_gtex_tissue_tpm": 103.478,
+      "tissue_tau": 0.7760413497792077,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Group enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000106683"
+      }
+    },
+    "MEF2C": {
+      "gencode_id": "ENSG00000081189.16",
+      "organ_median_tpm": {
+        "CNS": 4.50038,
+        "Heart": 5.430685,
+        "Liver": 1.01838,
+        "Kidney": 3.155955,
+        "Muscle": 35.3115,
+        "Lung": 12.0214
+      },
+      "top_modeled_organ": "Muscle",
+      "top_modeled_organ_tpm": 35.3115,
+      "top_gtex_tissue": "Brain_Frontal_Cortex_BA9",
+      "top_gtex_tissue_tpm": 59.9522,
+      "tissue_tau": 0.8136240799509902,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Group enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000081189"
+      }
+    },
+    "MSX1": {
+      "gencode_id": "ENSG00000163132.8",
+      "organ_median_tpm": {
+        "CNS": 4.15831,
+        "Heart": 3.302495,
+        "Liver": 0.289216,
+        "Kidney": 2.8534749999999995,
+        "Muscle": 2.09947,
+        "Lung": 6.60733
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 6.60733,
+      "top_gtex_tissue": "Cervix_Endocervix",
+      "top_gtex_tissue_tpm": 100.081,
+      "tissue_tau": 0.9073329917860874,
+      "hpa": {
+        "tissue_specificity": "Group enriched",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": "5",
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000163132"
+      }
+    },
+    "NRXN1": {
+      "gencode_id": "ENSG00000179915.25",
+      "organ_median_tpm": {
+        "CNS": 5.77774,
+        "Heart": 0.496283,
+        "Liver": 0.021534,
+        "Kidney": 0.0494565,
+        "Muscle": 0.019625,
+        "Lung": 0.061412
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 5.77774,
+      "top_gtex_tissue": "Brain_Cerebellar_Hemisphere",
+      "top_gtex_tissue_tpm": 23.1072,
+      "tissue_tau": 0.8991133809800032,
+      "hpa": {
+        "tissue_specificity": "Tissue enriched",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": "7",
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000179915"
+      }
+    },
+    "NSD1": {
+      "gencode_id": "ENSG00000165671.22",
+      "organ_median_tpm": {
+        "CNS": 5.59726,
+        "Heart": 4.35262,
+        "Liver": 3.44386,
+        "Kidney": 7.396995,
+        "Muscle": 8.22497,
+        "Lung": 12.3859
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 12.3859,
+      "top_gtex_tissue": "Brain_Cerebellar_Hemisphere",
+      "top_gtex_tissue_tpm": 22.5964,
+      "tissue_tau": 0.520799740015357,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000165671"
+      }
+    },
+    "NSD2": {
+      "gencode_id": "ENSG00000109685.19",
+      "organ_median_tpm": {
+        "CNS": 6.56226,
+        "Heart": 3.282355,
+        "Liver": 2.28932,
+        "Kidney": 5.157415,
+        "Muscle": 3.66897,
+        "Lung": 9.82797
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 9.82797,
+      "top_gtex_tissue": "Cells_EBV-transformed_lymphocytes",
+      "top_gtex_tissue_tpm": 37.3684,
+      "tissue_tau": 0.7857947831211641,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000109685"
+      }
+    },
+    "PAFAH1B1": {
+      "gencode_id": "ENSG00000007168.14",
+      "organ_median_tpm": {
+        "CNS": 46.2075,
+        "Heart": 26.0197,
+        "Liver": 12.4797,
+        "Kidney": 25.99765,
+        "Muscle": 50.9044,
+        "Lung": 63.0959
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 63.0959,
+      "top_gtex_tissue": "Brain_Cerebellar_Hemisphere",
+      "top_gtex_tissue_tpm": 135.87,
+      "tissue_tau": 0.6214358480845315,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Low tissue specificity",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000007168"
+      }
+    },
+    "PAX6": {
+      "gencode_id": "ENSG00000007372.25",
+      "organ_median_tpm": {
+        "CNS": 3.07239,
+        "Heart": 0.00336775,
+        "Liver": 0,
+        "Kidney": 0.00548125,
+        "Muscle": 0.008973,
+        "Lung": 0.0077665
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 3.07239,
+      "top_gtex_tissue": "Brain_Cerebellar_Hemisphere",
+      "top_gtex_tissue_tpm": 40.6465,
+      "tissue_tau": 0.9682719568558085,
+      "hpa": {
+        "tissue_specificity": "Group enriched",
+        "tissue_distribution": "Detected in some",
+        "tissue_specificity_score": "8",
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000007372"
+      }
+    },
+    "PMP22": {
+      "gencode_id": "ENSG00000109099.16",
+      "organ_median_tpm": {
+        "CNS": 15.2239,
+        "Heart": 25.1488,
+        "Liver": 1.36373,
+        "Kidney": 7.621115,
+        "Muscle": 33.4604,
+        "Lung": 85.5294
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 85.5294,
+      "top_gtex_tissue": "Nerve_Tibial",
+      "top_gtex_tissue_tpm": 769.157,
+      "tissue_tau": 0.9547553265188321,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000109099"
+      }
+    },
+    "PRDM16": {
+      "gencode_id": "ENSG00000142611.17",
+      "organ_median_tpm": {
+        "CNS": 3.40863,
+        "Heart": 2.249645,
+        "Liver": 0.148386,
+        "Kidney": 5.660035000000001,
+        "Muscle": 0.260287,
+        "Lung": 5.21974
+      },
+      "top_modeled_organ": "Kidney",
+      "top_modeled_organ_tpm": 5.660035000000001,
+      "top_gtex_tissue": "Artery_Aorta",
+      "top_gtex_tissue_tpm": 38.692,
+      "tissue_tau": 0.8985330642188231,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000142611"
+      }
+    },
+    "PRODH": {
+      "gencode_id": "ENSG00000100033.17",
+      "organ_median_tpm": {
+        "CNS": 36.644,
+        "Heart": 5.11749,
+        "Liver": 4.30804,
+        "Kidney": 17.709464999999998,
+        "Muscle": 22.7801,
+        "Lung": 21.7425
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 36.644,
+      "top_gtex_tissue": "Nerve_Tibial",
+      "top_gtex_tissue_tpm": 65.647,
+      "tissue_tau": 0.7521723474696425,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enhanced",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000100033"
+      }
+    },
+    "RAI1": {
+      "gencode_id": "ENSG00000108557.20",
+      "organ_median_tpm": {
+        "CNS": 7.69502,
+        "Heart": 6.690245,
+        "Liver": 2.50841,
+        "Kidney": 8.734015,
+        "Muscle": 3.511,
+        "Lung": 16.6368
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 16.6368,
+      "top_gtex_tissue": "Cervix_Endocervix",
+      "top_gtex_tissue_tpm": 33.6644,
+      "tissue_tau": 0.6013905737273997,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Group enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000108557"
+      }
+    },
+    "RERE": {
+      "gencode_id": "ENSG00000142599.19",
+      "organ_median_tpm": {
+        "CNS": 18.4279,
+        "Heart": 26.27175,
+        "Liver": 9.27848,
+        "Kidney": 32.3418,
+        "Muscle": 63.4468,
+        "Lung": 44.276
+      },
+      "top_modeled_organ": "Muscle",
+      "top_modeled_organ_tpm": 63.4468,
+      "top_gtex_tissue": "Uterus",
+      "top_gtex_tissue_tpm": 116.69,
+      "tissue_tau": 0.6523298175944322,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000142599"
+      }
+    },
+    "RPS19": {
+      "gencode_id": "ENSG00000105372.8",
+      "organ_median_tpm": {
+        "CNS": 129.445,
+        "Heart": 102.66890000000001,
+        "Liver": 182.562,
+        "Kidney": 193.1225,
+        "Muscle": 147.242,
+        "Lung": 422.055
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 422.055,
+      "top_gtex_tissue": "Cells_EBV-transformed_lymphocytes",
+      "top_gtex_tissue_tpm": 1041.21,
+      "tissue_tau": 0.6623950436475123,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enhanced",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000105372"
+      }
+    },
+    "SATB2": {
+      "gencode_id": "ENSG00000119042.17",
+      "organ_median_tpm": {
+        "CNS": 1.01737,
+        "Heart": 0.320289,
+        "Liver": 1.45034,
+        "Kidney": 3.004835,
+        "Muscle": 1.19969,
+        "Lung": 1.34527
+      },
+      "top_modeled_organ": "Kidney",
+      "top_modeled_organ_tpm": 3.004835,
+      "top_gtex_tissue": "Colon_Transverse",
+      "top_gtex_tissue_tpm": 18.8914,
+      "tissue_tau": 0.8576016789909994,
+      "hpa": {
+        "tissue_specificity": "Group enriched",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": "5",
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000119042"
+      }
+    },
+    "SCN1A": {
+      "gencode_id": "ENSG00000144285.23",
+      "organ_median_tpm": {
+        "CNS": 3.817,
+        "Heart": 0.017361,
+        "Liver": 0.004718,
+        "Kidney": 0.013919500000000001,
+        "Muscle": 0.004126,
+        "Lung": 1.12088
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 3.817,
+      "top_gtex_tissue": "Brain_Frontal_Cortex_BA9",
+      "top_gtex_tissue_tpm": 11.9575,
+      "tissue_tau": 0.9172042911411881,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in some",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000144285"
+      }
+    },
+    "SHANK3": {
+      "gencode_id": "ENSG00000251322.10",
+      "organ_median_tpm": {
+        "CNS": 26.0775,
+        "Heart": 15.04955,
+        "Liver": 7.24343,
+        "Kidney": 18.3521,
+        "Muscle": 7.39558,
+        "Lung": 54.4697
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 54.4697,
+      "top_gtex_tissue": "Brain_Cerebellum",
+      "top_gtex_tissue_tpm": 147.384,
+      "tissue_tau": 0.8353732146496536,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": null,
+        "entry_url": "https://www.proteinatlas.org/ENSG00000251322"
+      }
+    },
+    "SKI": {
+      "gencode_id": "ENSG00000157933.10",
+      "organ_median_tpm": {
+        "CNS": 23.7074,
+        "Heart": 22.44385,
+        "Liver": 14.8,
+        "Kidney": 22.5443,
+        "Muscle": 15.9461,
+        "Lung": 69.6514
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 69.6514,
+      "top_gtex_tissue": "Brain_Cerebellum",
+      "top_gtex_tissue_tpm": 218.482,
+      "tissue_tau": 0.7701346175402732,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000157933"
+      }
+    },
+    "SYNGAP1": {
+      "gencode_id": "ENSG00000197283.18",
+      "organ_median_tpm": {
+        "CNS": 21.3895,
+        "Heart": 4.30217,
+        "Liver": 1.6693,
+        "Kidney": 8.422085,
+        "Muscle": 1.28351,
+        "Lung": 19.9961
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 21.3895,
+      "top_gtex_tissue": "Pituitary",
+      "top_gtex_tissue_tpm": 66.7803,
+      "tissue_tau": 0.7471755383514833,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000197283"
+      }
+    },
+    "TBX1": {
+      "gencode_id": "ENSG00000184058.15",
+      "organ_median_tpm": {
+        "CNS": 0.265746,
+        "Heart": 0.23244299999999998,
+        "Liver": 0.211366,
+        "Kidney": 0.304226,
+        "Muscle": 25.2662,
+        "Lung": 7.42309
+      },
+      "top_modeled_organ": "Muscle",
+      "top_modeled_organ_tpm": 25.2662,
+      "top_gtex_tissue": "Testis",
+      "top_gtex_tissue_tpm": 32.0553,
+      "tissue_tau": 0.8814760729821325,
+      "hpa": {
+        "tissue_specificity": "Group enriched",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": "4",
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000184058"
+      }
+    },
+    "TBX5": {
+      "gencode_id": "ENSG00000089225.20",
+      "organ_median_tpm": {
+        "CNS": 0.060605,
+        "Heart": 42.924850000000006,
+        "Liver": 0.0094485,
+        "Kidney": 0,
+        "Muscle": 0.017424,
+        "Lung": 35.6201
+      },
+      "top_modeled_organ": "Heart",
+      "top_modeled_organ_tpm": 42.924850000000006,
+      "top_gtex_tissue": "Heart_Atrial_Appendage",
+      "top_gtex_tissue_tpm": 71.1406,
+      "tissue_tau": 0.9672250178347324,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in some",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Not detected",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000089225"
+      }
+    },
+    "TCF4": {
+      "gencode_id": "ENSG00000196628.20",
+      "organ_median_tpm": {
+        "CNS": 8.98428,
+        "Heart": 5.88294,
+        "Liver": 0.929669,
+        "Kidney": 3.26788,
+        "Muscle": 4.37556,
+        "Lung": 24.0401
+      },
+      "top_modeled_organ": "Lung",
+      "top_modeled_organ_tpm": 24.0401,
+      "top_gtex_tissue": "Brain_Cerebellar_Hemisphere",
+      "top_gtex_tissue_tpm": 37.0883,
+      "tissue_tau": 0.6852988902211392,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Group enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000196628"
+      }
+    },
+    "WT1": {
+      "gencode_id": "ENSG00000184937.16",
+      "organ_median_tpm": {
+        "CNS": 0.021354,
+        "Heart": 1.7158200000000001,
+        "Liver": 0.035086,
+        "Kidney": 5.58648,
+        "Muscle": 0.005538,
+        "Lung": 0.0844745
+      },
+      "top_modeled_organ": "Kidney",
+      "top_modeled_organ_tpm": 5.58648,
+      "top_gtex_tissue": "Uterus",
+      "top_gtex_tissue_tpm": 97.9137,
+      "tissue_tau": 0.9452881262727684,
+      "hpa": {
+        "tissue_specificity": "Tissue enhanced",
+        "tissue_distribution": "Detected in many",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Tissue enriched",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000184937"
+      }
+    },
+    "YWHAE": {
+      "gencode_id": "ENSG00000108953.17",
+      "organ_median_tpm": {
+        "CNS": 502.179,
+        "Heart": 181.416,
+        "Liver": 112.926,
+        "Kidney": 222.82099999999997,
+        "Muscle": 336.714,
+        "Lung": 322.807
+      },
+      "top_modeled_organ": "CNS",
+      "top_modeled_organ_tpm": 502.179,
+      "top_gtex_tissue": "Brain_Spinal_cord_cervical_c-1",
+      "top_gtex_tissue_tpm": 636.315,
+      "tissue_tau": 0.49659500552933095,
+      "hpa": {
+        "tissue_specificity": "Low tissue specificity",
+        "tissue_distribution": "Detected in all",
+        "tissue_specificity_score": null,
+        "protein_tissue_specificity": "Low tissue specificity",
+        "entry_url": "https://www.proteinatlas.org/ENSG00000108953"
+      }
+    }
+  }
+}
