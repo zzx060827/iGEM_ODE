@@ -19,7 +19,7 @@ import {
   Sigma,
   Target,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, type WheelEvent } from "react";
 import modelPayload from "../public/data/model-results.json";
 import expressionPayload from "../public/data/gene-expression.json";
 import { diseases, type DiseaseRecord, type Language, type Organ } from "./disease-data";
@@ -405,6 +405,7 @@ function recommendRegimen(records: DiseaseRecord[]): RegimenRecommendation {
 }
 
 export function DesignSpaceApp() {
+  const diseaseListRef = useRef<HTMLDivElement>(null);
   const [language, setLanguage] = useState<Language>("zh");
   const [activeView, setActiveView] = useState<"design" | "heatmap">("heatmap");
   const t = copy[language];
@@ -457,6 +458,18 @@ export function DesignSpaceApp() {
     }
   }
 
+  function scrollDiseaseLibrary(event: WheelEvent<HTMLElement>) {
+    const list = diseaseListRef.current;
+    if (!list || list.contains(event.target as Node) || list.scrollHeight <= list.clientHeight) return;
+
+    const maxScrollTop = list.scrollHeight - list.clientHeight;
+    const nextScrollTop = Math.max(0, Math.min(maxScrollTop, list.scrollTop + event.deltaY));
+    if (nextScrollTop === list.scrollTop) return;
+
+    list.scrollTop = nextScrollTop;
+    event.preventDefault();
+  }
+
   return (
     <main className="app-shell">
       <header className="topbar">
@@ -488,14 +501,14 @@ export function DesignSpaceApp() {
       </section>
 
       <div className="workspace">
-        <aside className="disease-panel" aria-label={t.library}>
+        <aside className="disease-panel" aria-label={t.library} onWheel={scrollDiseaseLibrary}>
           <div className="panel-heading"><div><Database size={17} /><strong>{t.library}</strong></div><span>{diseaseGroups.length}</span></div>
           <label className="search-field">
             <Search size={17} aria-hidden="true" />
             <span className="sr-only">{t.search}</span>
             <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.search} />
           </label>
-          <div className="disease-list">
+          <div className="disease-list" ref={diseaseListRef} tabIndex={0} aria-label={t.library}>
             {diseaseGroups.map((group) => {
               const expanded = Boolean(query.trim()) || expandedDisease === group.key;
               const active = group.genes.some((item) => item.id === disease.id);

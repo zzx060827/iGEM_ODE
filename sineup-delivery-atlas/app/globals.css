@@ -112,9 +112,12 @@ a { color: inherit; }
 }
 
 .disease-panel {
+  height: 100%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow: hidden;
   background: #f8faf9;
   border-right: 1px solid var(--line);
 }
@@ -153,6 +156,10 @@ a { color: inherit; }
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: #91a49a #e7ece9;
+}
+.disease-list:focus-visible {
+  outline: 2px solid rgba(20, 108, 75, .35);
+  outline-offset: -2px;
 }
 .disease-list::-webkit-scrollbar { width: 9px; }
 .disease-list::-webkit-scrollbar-track { background: #e7ece9; border-radius: 4px; }
@@ -556,7 +563,7 @@ a { color: inherit; }
   .context-strip { padding: 8px 14px; gap: 8px; overflow-x: auto; }
   .context-strip > div { min-width: 110px; }
   .workspace { display: block; height: auto; min-height: 0; }
-  .disease-panel { border-right: 0; border-bottom: 1px solid var(--line); }
+  .disease-panel { height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
   .disease-list { max-height: 220px; overflow-y: scroll; }
   .data-note { display: none; }
   .analysis-panel { padding: 18px 12px 12px; }
