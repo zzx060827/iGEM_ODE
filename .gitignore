@@ -1,30 +1,33 @@
-<<<<<<< HEAD
-# 编译产物
-build/
-dist/
-out/
-aav_pbpk_outputs/
-aav_pbpk_bell_outputs/
-
-# 依赖
-node_modules/
-vendor/
-
-# 缓存
+# Python
 __pycache__/
-.cache/
+*.py[cod]
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
 
-# IDE配置
+# Node / frontend
+node_modules/
+.vinext/
+.wrangler/
+dist/
+build/
+out/
+
+# LaTeX and document builds
+docs/latex/build/
+docs/pdf/*.aux
+docs/pdf/*.log
+docs/pdf/*.out
+docs/pdf/*.toc
+docs/pdf/*.synctex.gz
+
+# Generated model outputs that are not curated snapshots
+aav_pbpk_bell_outputs/
+tmp/
+
+# Editors and operating systems
 .vscode/
 .idea/
-
-# 系统文件
 .DS_Store
 Thumbs.db
-
-
-=======
-__pycache__/
-*.pyc
->>>>>>> 323539e (undate 2.0)

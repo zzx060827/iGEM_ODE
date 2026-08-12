@@ -16,6 +16,7 @@ import type { Language } from "./disease-data";
 type OrganId = "brain" | "lung" | "heart" | "liver" | "spleen" | "kidney" | "muscle" | "rest";
 type MetricId = "time" | "auc" | "share" | "peak" | "expression";
 type HumanMetricId = "vascular" | "isf" | "episome" | "protein" | "auc" | "share" | "peak" | "tmax";
+type ColorMappingMode = "absolute" | "relative";
 type OrganMetrics = {
   auc_amount_vg_h: number;
   auc_concentration_vg_h_ml: number;
@@ -124,6 +125,9 @@ const copy = {
     description: "每种衣壳重新求解同一套 PBPK。颜色来自器官 ISF 暴露、剂量份额或原生胞内转导状态。",
     capsid: "衣壳",
     metric: "显示指标",
+    mapping: "颜色映射",
+    absolute: "绝对值",
+    relative: "相对值",
     administration: "给药途径",
     time: "时点 ISF 浓度",
     auc: "ISF 浓度 AUC",
@@ -148,8 +152,9 @@ const copy = {
     curve: "0–72 h ISF 浓度",
     evidence: "衣壳证据",
     source: "查看衣壳来源",
-    logScale: "固定跨衣壳对数色标",
-    linearScale: "固定跨衣壳线性色标",
+    logScale: "当前时间窗固定的跨衣壳对数色标",
+    linearScale: "当前时间窗固定的跨衣壳线性色标",
+    relativeScale: "相对色标：当前衣壳的最高区域定义为 100%",
     tmaxScale: "同一路径下的连续 ODE 达峰时间",
     earlyPeak: "早达峰",
     latePeak: "晚达峰",
@@ -185,6 +190,9 @@ const copy = {
     description: "Each capsid re-solves the same PBPK system. Color encodes organ ISF exposure, dose share, or native intracellular transduction.",
     capsid: "Capsid",
     metric: "Metric",
+    mapping: "Color mapping",
+    absolute: "Absolute",
+    relative: "Relative",
     administration: "Administration",
     time: "ISF concentration at time",
     auc: "ISF concentration AUC",
@@ -209,8 +217,9 @@ const copy = {
     curve: "0–72 h ISF concentration",
     evidence: "Capsid evidence",
     source: "Open capsid source",
-    logScale: "Fixed cross-capsid log scale",
-    linearScale: "Fixed cross-capsid linear scale",
+    logScale: "Fixed cross-capsid scale for this time window",
+    linearScale: "Fixed cross-capsid scale for this time window",
+    relativeScale: "Relative scale: highest region for this capsid = 100%",
     tmaxScale: "Continuous ODE peak time within this route",
     earlyPeak: "Earlier peak",
     latePeak: "Later peak",
@@ -270,6 +279,24 @@ function colorScale(value: number) {
   const end = hexToRgb(colorStops[index + 1]);
   const rgb = start.map((channel, i) => Math.round(channel + (end[i] - channel) * fraction));
   return `rgb(${rgb.join(",")})`;
+}
+
+function colorScaleBounds(values: number[], logarithmic: boolean) {
+  const positive = values.filter((value) => Number.isFinite(value) && value > 0);
+  if (!positive.length) {
+    return { min: 0, max: 1, rawMin: 0, rawMax: 1, logarithmic };
+  }
+  const rawMin = Math.min(...positive);
+  const rawMax = Math.max(...positive);
+  return logarithmic
+    ? {
+        min: Math.log10(rawMin),
+        max: Math.log10(rawMax),
+        rawMin,
+        rawMax,
+        logarithmic,
+      }
+    : { min: 0, max: rawMax, rawMin: 0, rawMax, logarithmic };
 }
 
 function superscriptExponent(exponent: number) {
@@ -458,6 +485,7 @@ function MouseOrganHeatmap({ language }: { language: Language }) {
   const t = copy[language];
   const [capsidId, setCapsidId] = useState("aav9");
   const [metric, setMetric] = useState<MetricId>("time");
+  const [mappingMode, setMappingMode] = useState<ColorMappingMode>("relative");
   const [selectedOrgan, setSelectedOrgan] = useState<OrganId>("liver");
   const initialTime = heatmap.time_h.reduce((best, value, index) =>
     Math.abs(value - 8) < Math.abs(heatmap.time_h[best] - 8) ? index : best, 0);
@@ -474,22 +502,29 @@ function MouseOrganHeatmap({ language }: { language: Language }) {
   }, [playing, metric]);
 
   const scale = useMemo(() => {
-    const values = heatmap.capsids.flatMap((capsid) =>
-      heatmap.organs.map((organ) => metricValue(capsid.organs[organ], metric, timeIndex)),
-    ).filter((value): value is number => value !== null && Number.isFinite(value) && value > 0);
     const logarithmic = metric === "time" || metric === "auc" || metric === "peak" || metric === "expression";
-    if (values.length === 0) return { min: 0, max: 1, logarithmic };
-    if (logarithmic) return { min: Math.log10(Math.min(...values)), max: Math.log10(Math.max(...values)), logarithmic };
-    return { min: 0, max: Math.max(...values), logarithmic };
+    const values = metric === "time"
+      ? heatmap.capsids.flatMap((capsid) =>
+          heatmap.organs.flatMap((organ) => capsid.organs[organ].isf_concentration_vg_ml),
+        )
+      : heatmap.capsids.flatMap((capsid) =>
+          heatmap.organs.map((organ) => metricValue(capsid.organs[organ], metric, timeIndex) ?? 0),
+        );
+    return colorScaleBounds(values, logarithmic);
   }, [metric, timeIndex]);
 
   const rawValues = Object.fromEntries(heatmap.organs.map((organ) => [
     organ,
     metricValue(selectedCapsid.organs[organ], metric, timeIndex),
   ])) as Record<OrganId, number | null>;
+  const relativeMaximum = Math.max(
+    ...Object.values(rawValues).filter((value): value is number => value !== null && value > 0),
+    1e-30,
+  );
   const normalized = Object.fromEntries(heatmap.organs.map((organ) => {
     const value = rawValues[organ];
     if (value === null || value <= 0) return [organ, null];
+    if (mappingMode === "relative") return [organ, Math.min(1, value / relativeMaximum)];
     const transformed = scale.logarithmic ? Math.log10(value) : value;
     return [organ, Math.min(1, Math.max(0, (transformed - scale.min) / Math.max(scale.max - scale.min, 1e-12)))];
   })) as Record<OrganId, number | null>;
@@ -526,6 +561,12 @@ function MouseOrganHeatmap({ language }: { language: Language }) {
             {metricOrder.map((id) => <button key={id} type="button" className={metric === id ? "active" : ""} onClick={() => { setMetric(id); if (id !== "time") setPlaying(false); }}>{t[id]}</button>)}
           </div>
         </div>
+        <div className="metric-control mapping-control">
+          <span>{t.mapping}</span>
+          <div className="metric-segments">
+            {(["absolute", "relative"] as ColorMappingMode[]).map((mode) => <button key={mode} type="button" className={mappingMode === mode ? "active" : ""} onClick={() => setMappingMode(mode)}>{t[mode]}</button>)}
+          </div>
+        </div>
       </div>
 
       <div className="heatmap-workspace">
@@ -543,8 +584,8 @@ function MouseOrganHeatmap({ language }: { language: Language }) {
           </div>
           <div className="scale-legend">
             <div className="scale-bar" />
-            <div><span>Low</span><span>High</span></div>
-            <small>{scale.logarithmic ? t.logScale : t.linearScale}</small>
+            <div><span>{mappingMode === "relative" ? "0%" : compact(scale.rawMin)}</span><span>{mappingMode === "relative" ? "100%" : compact(scale.rawMax)}</span></div>
+            <small>{mappingMode === "relative" ? t.relativeScale : scale.logarithmic ? t.logScale : t.linearScale}</small>
           </div>
         </aside>
 
@@ -873,6 +914,7 @@ function HumanSpatialHeatmap({ data, language }: { data: HumanSpatialPayload; la
   const [administrationId, setAdministrationId] = useState<HumanAdministrationRoute["route_id"]>(data.default_route_id);
   const [capsidId, setCapsidId] = useState("aav9");
   const [metric, setMetric] = useState<HumanMetricId>("isf");
+  const [mappingMode, setMappingMode] = useState<ColorMappingMode>("relative");
   const [selectedRegion, setSelectedRegion] = useState("muscle_injected_arm");
   const [timeH, setTimeH] = useState(6);
   const [playing, setPlaying] = useState(false);
@@ -894,23 +936,47 @@ function HumanSpatialHeatmap({ data, language }: { data: HumanSpatialPayload; la
   }, [playing, timeWindow, windowEndH, windowStartH]);
 
   const scale = useMemo(() => {
-    const values = selectedRoute.capsids.flatMap((capsid) => data.region_ids.map((regionId) =>
-      humanMetricValue(capsid.regions[regionId], metric, timeH, data.time_h),
-    )).filter((value) => Number.isFinite(value) && value > 0);
     const logarithmic = metric !== "share" && metric !== "tmax";
-    if (!values.length) return { min: 0, max: 1, logarithmic };
-    return logarithmic
-      ? { min: Math.log10(Math.min(...values)), max: Math.log10(Math.max(...values)), logarithmic }
-      : { min: 0, max: Math.max(...values), logarithmic };
-  }, [data.region_ids, data.time_h, metric, selectedRoute.capsids, timeH]);
+    const seriesKey = metric === "vascular" ? "vascular_concentration_vg_ml"
+      : metric === "isf" ? "isf_concentration_vg_ml"
+        : metric === "episome" ? "episome_vg"
+          : metric === "protein" ? "protein_au" : null;
+    const values = seriesKey
+      ? selectedRoute.capsids.flatMap((capsid) =>
+          data.region_ids.flatMap((regionId) =>
+            capsid.regions[regionId][seriesKey].filter(
+              (_, index) => data.time_h[index] >= windowStartH && data.time_h[index] <= windowEndH,
+            ),
+          ),
+        )
+      : selectedRoute.capsids.flatMap((capsid) =>
+          data.region_ids.map((regionId) =>
+            humanMetricValue(capsid.regions[regionId], metric, timeH, data.time_h),
+          ),
+        );
+    return colorScaleBounds(values, logarithmic);
+  }, [
+    data.region_ids,
+    data.time_h,
+    metric,
+    selectedRoute.capsids,
+    timeH,
+    windowEndH,
+    windowStartH,
+  ]);
 
   const rawValues = Object.fromEntries(data.region_ids.map((regionId) => [
     regionId,
     humanMetricValue(selectedCapsid.regions[regionId], metric, timeH, data.time_h),
   ])) as Record<string, number>;
+  const relativeMaximum = Math.max(
+    ...Object.values(rawValues).filter((value) => Number.isFinite(value) && value > 0),
+    1e-30,
+  );
   const normalized = Object.fromEntries(data.region_ids.map((regionId) => {
     const value = rawValues[regionId];
     if (!(value > 0)) return [regionId, 0];
+    if (mappingMode === "relative") return [regionId, Math.min(1, value / relativeMaximum)];
     const transformed = scale.logarithmic ? Math.log10(value) : value;
     return [regionId, Math.min(1, Math.max(0, (transformed - scale.min) / Math.max(scale.max - scale.min, 1e-12)))];
   })) as Record<string, number>;
@@ -977,13 +1043,14 @@ function HumanSpatialHeatmap({ data, language }: { data: HumanSpatialPayload; la
         <label><span>{t.administration}</span><select value={administrationId} onChange={(event) => selectAdministration(event.target.value as HumanAdministrationRoute["route_id"])}>{data.administration_routes.map((route) => <option key={route.route_id} value={route.route_id}>{language === "zh" ? route.label_zh : route.label}</option>)}</select></label>
         <label><span>{t.capsid}</span><select value={capsidId} onChange={(event) => setCapsidId(event.target.value)}>{selectedRoute.capsids.map((capsid) => <option key={capsid.capsid_id} value={capsid.capsid_id}>{capsid.capsid}</option>)}</select></label>
         <div className="metric-control"><span>{t.metric}</span><div className="metric-segments human-metric-segments">{metrics.map((id) => <button key={id} type="button" className={metric === id ? "active" : ""} onClick={() => setMetric(id)}>{t[id]}</button>)}</div></div>
+        <div className="metric-control mapping-control"><span>{t.mapping}</span><div className="metric-segments">{(["absolute", "relative"] as ColorMappingMode[]).map((mode) => <button key={mode} type="button" className={mappingMode === mode ? "active" : ""} onClick={() => setMappingMode(mode)}>{t[mode]}</button>)}</div></div>
       </div>
 
       <div className="heatmap-workspace human-workspace">
         <aside className="organ-ranking">
           <div className="map-panel-title"><BarChart3 size={16} /><strong>{t.rank}</strong><span>{humanMetricUnit(metric)}</span></div>
           <div className="ranking-list regional-ranking-list">{ranking.map((regionId, index) => <button type="button" key={regionId} className={selectedRegion === regionId ? "selected" : ""} onClick={() => setSelectedRegion(regionId)}><span className="rank-number">{String(index + 1).padStart(2, "0")}</span><span className="rank-organ"><strong>{humanRegionName(regionId, selectedCapsid.regions[regionId], language)}</strong><i style={{ background: colorScale(normalized[regionId]) }} /></span><span className="rank-value">{compact(rawValues[regionId])}</span></button>)}</div>
-          <div className="scale-legend"><div className="scale-bar" /><div><span>{metric === "tmax" ? t.earlyPeak : "Low"}</span><span>{metric === "tmax" ? t.latePeak : "High"}</span></div><small>{scale.logarithmic ? t.logScale : metric === "tmax" ? t.tmaxScale : t.linearScale}</small></div>
+          <div className="scale-legend"><div className="scale-bar" /><div><span>{mappingMode === "relative" ? "0%" : metric === "tmax" ? t.earlyPeak : compact(scale.rawMin)}</span><span>{mappingMode === "relative" ? "100%" : metric === "tmax" ? t.latePeak : compact(scale.rawMax)}</span></div><small>{mappingMode === "relative" ? t.relativeScale : scale.logarithmic ? t.logScale : metric === "tmax" ? t.tmaxScale : t.linearScale}</small></div>
         </aside>
 
         <div className="anatomy-panel">

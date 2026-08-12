@@ -21,54 +21,73 @@ from scipy.optimize import minimize_scalar
 import human_spatial_pbpk as human_model
 
 
+TROPISM_LITERATURE_PATH = Path(__file__).with_name("data") / "aav_capsid_tropism_literature.csv"
+
 CAPSID_PRIORS = {
     "aav2": {
         "label": "AAV2", "evidence": "medium", "species": "preclinical + clinical ocular",
         "persistence_factor": 0.95,
         "tropism": {"liver": 0.30, "spleen": 0.80, "kidney": 0.45, "heart": 0.28, "muscle": 0.22, "lung": 0.80, "brain": 0.16, "rest": 0.35},
-        "source": "https://www.fda.gov/vaccines-blood-biologics/cellular-gene-therapy-products/luxturna",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/18414476/",
+        "additional_sources": ["https://pubmed.ncbi.nlm.nih.gov/40337478/"],
     },
     "aav5": {
         "label": "AAV5", "evidence": "medium", "species": "preclinical",
         "persistence_factor": 0.90,
         "tropism": {"liver": 0.55, "spleen": 0.85, "kidney": 0.48, "heart": 0.25, "muscle": 0.22, "lung": 2.20, "brain": 0.18, "rest": 0.45},
-        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10659018/",
+        "source": "https://pubmed.ncbi.nlm.nih.gov/39863928/",
+        "additional_sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/"],
     },
     "aav8": {
         "label": "AAV8", "evidence": "strong", "species": "mouse + NHP",
         "persistence_factor": 1.00,
         "tropism": {"liver": 2.20, "spleen": 0.75, "kidney": 0.90, "heart": 0.72, "muscle": 0.95, "lung": 0.65, "brain": 0.14, "rest": 0.90},
-        "source": "https://www.sciencedirect.com/science/article/pii/S0022354923004148",
+        "source": "https://doi.org/10.1016/j.xphs.2023.10.005",
+        "additional_sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/"],
     },
     "aav9": {
         "label": "AAV9", "evidence": "strong", "species": "mouse + NHP",
         "persistence_factor": 1.00,
         "tropism": {organ: 1.0 for organ in ["liver", "spleen", "kidney", "heart", "muscle", "lung", "brain", "rest"]},
-        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7769048/",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11404148/",
+        "additional_sources": [
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC7769048/",
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/",
+        ],
     },
     "aavrh10": {
         "label": "AAVrh.10", "evidence": "medium", "species": "NHP",
         "persistence_factor": 1.00,
         "tropism": {"liver": 0.82, "spleen": 0.78, "kidney": 0.75, "heart": 1.05, "muscle": 0.95, "lung": 0.90, "brain": 1.55, "rest": 0.95},
-        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7769048/",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/",
+        "additional_sources": [
+            "https://pubmed.ncbi.nlm.nih.gov/39863928/",
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC7769048/",
+        ],
     },
     "php-eb": {
         "label": "PHP.eB", "evidence": "exploratory", "species": "Ly6a-positive mouse only",
         "persistence_factor": 0.95,
         "tropism": {"liver": 0.55, "spleen": 0.72, "kidney": 0.65, "heart": 0.72, "muscle": 0.82, "lung": 0.70, "brain": 12.0, "rest": 0.90},
-        "source": "https://clover.caltech.edu/aav/faq",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7193641/",
+        "additional_sources": [
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/",
+            "https://pubmed.ncbi.nlm.nih.gov/40337478/",
+        ],
     },
     "cap-b10": {
         "label": "CAP-B10", "evidence": "exploratory", "species": "mouse",
         "persistence_factor": 0.95,
         "tropism": {"liver": 0.20, "spleen": 0.55, "kidney": 0.48, "heart": 0.58, "muscle": 0.72, "lung": 0.58, "brain": 14.0, "rest": 0.85},
-        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9621732/",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/",
+        "additional_sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC9621732/"],
     },
     "lk03": {
         "label": "AAV-LK03", "evidence": "exploratory", "species": "human-hepatocyte prior",
         "persistence_factor": 1.05,
         "tropism": {"liver": 2.80, "spleen": 0.48, "kidney": 0.55, "heart": 0.38, "muscle": 0.42, "lung": 0.48, "brain": 0.10, "rest": 0.55},
-        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9621732/",
+        "source": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/",
+        "additional_sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC9621732/"],
     },
 }
 
@@ -366,6 +385,7 @@ def build_human_spatial_payload() -> dict:
                 "evidence": capsid["evidence"],
                 "source_species": capsid["species"],
                 "source": capsid["source"],
+                "additional_sources": capsid.get("additional_sources", []),
                 "human_translation_note": translation_note,
                 "max_mass_balance_error": float(np.max(np.abs(balance[meaningful]))),
                 "regions": regions,
@@ -395,6 +415,21 @@ def build_human_spatial_payload() -> dict:
         "physiology_status": "reference-human physiology; capsid parameters exploratory",
         "cardiac_output_ml_h": float(human_model.CARDIAC_OUTPUT_ML_H),
         "effective_flow_scale": float(human_model.EFFECTIVE_FLOW_SCALE),
+        "total_modeled_blood_volume_ml": float(human_model.TOTAL_MODELED_BLOOD_VOLUME_ML),
+        "reference_blood_volume_ml": float(human_model.REFERENCE_BLOOD_VOLUME_ML),
+        "csf_total_volume_ml": float(human_model.CSF_TOTAL_VOLUME_ML),
+        "csf_production_ml_h": float(human_model.CSF_PRODUCTION_ML_H),
+        "csf_absorption_half_life_h": float(human_model.CSF_ABSORPTION_HALF_LIFE_H),
+        "aav9_capsid_half_life_h": {
+            "blood": float(human_model.BLOOD_CAPSID_HALF_LIFE_H),
+            **{
+                organ: float(value)
+                for organ, value in human_model.CAPSID_HALF_LIFE_H.items()
+            },
+        },
+        "aav9_capsid_half_life_provenance": human_model.REFERENCE_HUMAN_AAV9_PROVENANCE,
+        "parameter_evidence": human_model.AAV9_PARAMETER_EVIDENCE,
+        "physiology_sources": human_model.HUMAN_PHYSIOLOGY_SOURCES,
         "equation_family": "ode1.0 Q-PS-Kp-J_res-J_deg plus receptor-to-episome trafficking",
         "state_count": len(human_model.STATE_NAMES),
         "region_ids": list(human_model.REGIONS),
@@ -630,6 +665,7 @@ def main() -> None:
             "persistence": "numerically solved Epi -> SINEUP RNA -> endogenous protein ODE; duration ends when protein falls below 65%",
             "cellular_transduction": "liver, kidney and CNS use native intracellular states from ode1.0.py; heart and muscle use an explicitly labelled PBPK-ISF-driven reduced surrogate; Eye reuses the CNS chain with a local-route prior",
             "capsid_parameterization": "PS and Kp are scaled by literature-informed capsid-organ tropism priors; BBB transcytosis is also scaled for brain",
+            "capsid_prior_status": "relative tropism multipliers remain literature-informed priors; the linked head-to-head studies are recorded, but cross-study values are not treated as one calibrated numeric assay",
             "important_limit": "Eye uses a local-route barrier surrogate because the PBPK model does not yet contain an anatomical eye compartment",
             "human_spatial_model": "mouse-equation-aligned Q-PS-Kp-J_res-J_deg PBPK expanded to IV, lumbar intrathecal, intracisternal, intracerebroventricular, deltoid intramuscular and airway-depot inputs, cardiopulmonary circulation, bidirectional CSF transport, 24 human regions, receptor uptake, intracellular trafficking, episome, mRNA and protein",
             "human_translation_limit": "reference-human physiological flows and volumes are mechanistic priors; capsid-specific parameters require NHP/human fitting and uncertainty analysis",
@@ -639,9 +675,14 @@ def main() -> None:
         "organ_heatmap": build_organ_heatmap_payload(simulated),
         "human_spatial_heatmap_file": "/data/human-spatial-results.json",
         "human_route_summary": human_route_summary,
+        "parameter_evidence": module["AAV9_PARAMETER_EVIDENCE"],
+        "capsid_tropism_literature_file": "/data/aav_capsid_tropism_literature.csv",
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    args.output.with_name("aav_capsid_tropism_literature.csv").write_bytes(
+        TROPISM_LITERATURE_PATH.read_bytes()
+    )
     human_output = args.output.with_name("human-spatial-results.json")
     human_output.write_text(
         json.dumps(human_spatial_payload, ensure_ascii=False, separators=(",", ":")),

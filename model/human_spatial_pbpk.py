@@ -11,10 +11,22 @@ underlying calculation method.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from pathlib import Path
+import sys
 from typing import Mapping
 
 import numpy as np
 from scipy.integrate import solve_ivp
+
+MODEL_DIR = Path(__file__).resolve().parent
+if str(MODEL_DIR) not in sys.path:
+    sys.path.insert(0, str(MODEL_DIR))
+
+from aav_parameter_evidence import (
+    REFERENCE_HUMAN_AAV9_CAPSID_HALF_LIFE_H,
+    REFERENCE_HUMAN_AAV9_PROVENANCE,
+    aav9_parameter_payload,
+)
 
 
 BODY_WEIGHT_KG = 70.0
@@ -25,17 +37,31 @@ CARDIAC_OUTPUT_ML_H = 330_000.0
 # Match the dimensionless Q scaling used by the mouse model. Human cardiac
 # output and compartment volumes still set the species-specific transit times.
 EFFECTIVE_FLOW_SCALE = 0.05
-BLOOD_CAPSID_HALF_LIFE_H = 2.4
+BLOOD_CAPSID_HALF_LIFE_H = REFERENCE_HUMAN_AAV9_CAPSID_HALF_LIFE_H["blood"]
 
 CAPSID_HALF_LIFE_H = {
-    "brain": 24.8,
-    "heart": 15.6,
-    "liver": 22.6,
-    "spleen": 22.9,
-    "kidney": 24.0,
-    "muscle": 48.7,
-    "lung": 18.0,
-    "rest": 34.0,
+    organ: half_life
+    for organ, half_life in REFERENCE_HUMAN_AAV9_CAPSID_HALF_LIFE_H.items()
+    if organ != "blood"
+}
+AAV9_PARAMETER_EVIDENCE = aav9_parameter_payload()
+
+HUMAN_PHYSIOLOGY_SOURCES = {
+    "icrp_89": {
+        "title": "Basic Anatomical and Physiological Data for Use in Radiological Protection Reference Values",
+        "url": "https://www.icrp.org/publication.asp?id=icrp+publication+89",
+        "use": "adult reference body and organ-scale anatomy/physiology",
+    },
+    "damkier_2013_csf": {
+        "title": "Cerebrospinal Fluid Secretion by the Choroid Plexus",
+        "url": "https://doi.org/10.1152/physrev.00004.2013",
+        "use": "150 mL adult CSF and approximately 500-600 mL/day production",
+    },
+    "ballon_2020_nhp_pet": {
+        "title": "Quantitative Whole-Body Imaging of I-124-Labeled AAV Biodistribution in NHPs",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7769048/",
+        "use": "reference-human AAV9 early capsid-PK prior",
+    },
 }
 
 RECEPTOR_DENSITY_VG_ML = {
@@ -156,8 +182,14 @@ ROUTE_COMPARTMENT_VOLUMES_ML = {
     "csf_lumbar": 75.0,
     "csf_cranial": 75.0,
 }
+# Adult physiology is about 150 mL CSF with roughly 500 mL/day production.
+# The absorption half-life is the equivalent first-order turnover half-life.
+CSF_TOTAL_VOLUME_ML = sum(ROUTE_COMPARTMENT_VOLUMES_ML.values())
+CSF_PRODUCTION_ML_H = 500.0 / 24.0
 CSF_ROSTRAL_FLOW_ML_H = 10.0
-CSF_ABSORPTION_HALF_LIFE_H = 5.5
+CSF_ABSORPTION_HALF_LIFE_H = np.log(2.0) / (
+    CSF_PRODUCTION_ML_H / CSF_TOTAL_VOLUME_ML
+)
 IM_DEPOT_ABSORPTION_HALF_LIFE_H = 3.0
 IM_LOCAL_FRACTION = 0.85
 AIRWAY_DEPOT_RELEASE_HALF_LIFE_H = 1.2
@@ -278,6 +310,20 @@ CIRCULATION_VOLUMES_ML = {
     "arterial": 500.0,
     "venous": 1000.0,
 }
+
+REFERENCE_BLOOD_VOLUME_ML = 5000.0
+TOTAL_MODELED_BLOOD_VOLUME_ML = (
+    sum(CIRCULATION_VOLUMES_ML.values())
+    + sum(region.vascular_ml for region in REGIONS.values())
+)
+if not np.isclose(
+    TOTAL_MODELED_BLOOD_VOLUME_ML,
+    REFERENCE_BLOOD_VOLUME_ML,
+    rtol=0.02,
+):
+    raise RuntimeError(
+        "Central plus regional vascular volume must remain within 2% of 5 L"
+    )
 
 CIRCULATION_STATES = tuple(f"A_{name}" for name in CIRCULATION_VOLUMES_ML)
 ROUTE_STATES = ("A_csf_lumbar", "A_csf_cranial", "A_im_depot", "A_airway_depot")

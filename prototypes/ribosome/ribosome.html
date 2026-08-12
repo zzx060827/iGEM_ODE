@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>SINEUP U型构象翻译机制</title>
+<style>
+    body { 
+        background: #1e1e1e; 
+        color: #fff; 
+        font-family: sans-serif; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        margin: 0; 
+    }
+    #simulation { 
+        position: relative; 
+        width: 800px; 
+        height: 500px; 
+        background: #2a2a2a; 
+        border: 1px solid #444; 
+        margin-top: 50px; 
+        overflow: hidden; 
+    }
+    svg { 
+        position: absolute; 
+        top: 0; 
+        left: 0; 
+        width: 100%; 
+        height: 100%; 
+        overflow: visible; 
+        pointer-events: none; 
+    }
+    #ribosome { 
+        position: absolute; 
+        width: 40px; 
+        height: 38px; 
+        background: #FF9800; 
+        border-radius: 10px; 
+        z-index: 2; 
+        margin-left: -20px; 
+        margin-top: -19px; 
+    }
+    .protein { 
+        position: absolute; 
+        width: 12px; 
+        height: 12px; 
+        background: #E91E63; 
+        border-radius: 50%; 
+        z-index: 1; 
+        margin-left: -6px; 
+        margin-top: -6px; 
+        animation: drop 1.2s forwards; 
+    }
+    @keyframes drop { 
+        0% { transform: translateY(0); opacity: 1; } 
+        100% { transform: translateY(120px); opacity: 0; } 
+    }
+    button { 
+        margin-top: 30px; 
+        padding: 12px 24px; 
+        font-size: 16px; 
+        background: #00BCD4; 
+        color: #fff; 
+        border: none; 
+        cursor: pointer; 
+        border-radius: 4px; 
+    }
+    button:disabled { 
+        background: #555; 
+        cursor: not-allowed; 
+    }
+    .label { 
+        position: absolute; 
+        font-size: 14px; 
+        font-weight: bold; 
+    }
+    #sineup-group { 
+        opacity: 0; 
+        transition: opacity 1s ease; 
+    }
+</style>
+</head>
+<body>
+
+<div id="simulation">
+    <div class="label" style="top: 120px; left: 110px; color: #4CAF50;">5' UTR</div>
+    <div class="label" style="top: 120px; left: 630px; color: #FF9800;">3' UTR</div>
+    <div id="sineup-label" class="label" style="top: 230px; left: 570px; color: #00BCD4; opacity: 0; transition: opacity 1s ease;">SINEUP (BD)</div>
+    <div id="sineup-ed-label" class="label" style="top: 310px; left: 410px; color: #00BCD4; opacity: 0; transition: opacity 1s ease;">ED区</div>
+
+    <svg>
+        <defs>
+            <linearGradient id="mrnaGrad" gradientUnits="userSpaceOnUse" x1="150" y1="0" x2="650" y2="0">
+                <stop offset="0%" stop-color="#4CAF50" />
+                <stop offset="20%" stop-color="#4CAF50" />
+                <stop offset="35%" stop-color="#9E9E9E" />
+                <stop offset="65%" stop-color="#9E9E9E" />
+                <stop offset="80%" stop-color="#FF9800" />
+                <stop offset="100%" stop-color="#FF9800" />
+            </linearGradient>
+        </defs>
+        
+        <path id="mrna-path" d="M 150 150 C 150 400, 650 400, 650 150" fill="none" stroke="url(#mrnaGrad)" stroke-width="8"/>
+        
+        <g id="sineup-group">
+            <path d="M 640 160 Q 640 220, 600 260" fill="none" stroke="#00BCD4" stroke-width="6" stroke-dasharray="4 2"/>
+            <path d="M 600 260 L 520 280" fill="none" stroke="#00BCD4" stroke-width="4"/>
+            <circle cx="500" cy="280" r="20" fill="none" stroke="#00BCD4" stroke-width="4"/>
+            <circle cx="465" cy="280" r="15" fill="none" stroke="#00BCD4" stroke-width="4"/>
+            <path d="M 450 280 C 430 260, 430 300, 450 280" fill="none" stroke="#00BCD4" stroke-width="4"/> 
+        </g>
+    </svg>
+    
+    <div id="ribosome"></div>
+</div>
+
+<button id="bindAction">注入 SINEUP</button>
+
+<script>
+    const mrnaPath = document.getElementById('mrna-path');
+    const ribosome = document.getElementById('ribosome');
+    const sineupGroup = document.getElementById('sineup-group');
+    const sineupLabel = document.getElementById('sineup-label');
+    const sineupEdLabel = document.getElementById('sineup-ed-label');
+    const bindBtn = document.getElementById('bindAction');
+    const simulation = document.getElementById('simulation');
+    
+    const pathLen = mrnaPath.getTotalLength();
+    let progress = 0;
+    let speed = 0.002;
+    let translating = true;
+    let frameCount = 0;
+    let dropInterval = 60;
+
+    function setRibosomePos(x, y) {
+        ribosome.style.left = x + 'px';
+        ribosome.style.top = y + 'px';
+    }
+
+    function createProtein(x, y) {
+        const protein = document.createElement('div');
+        protein.className = 'protein';
+        protein.style.left = x + 'px';
+        protein.style.top = (y + 19) + 'px'; 
+        simulation.appendChild(protein);
+        setTimeout(() => protein.remove(), 1200);
+    }
+
+    function animate() {
+        if (translating) {
+            progress += speed;
+            if (progress >= 1) progress = 0;
+            
+            const pt = mrnaPath.getPointAtLength(progress * pathLen);
+            setRibosomePos(pt.x, pt.y);
+
+            frameCount++;
+            if (frameCount >= dropInterval) {
+                createProtein(pt.x, pt.y);
+                frameCount = 0;
+                ribosome.style.backgroundColor = '#FFF';
+                setTimeout(() => ribosome.style.backgroundColor = '#FF9800', 100);
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    bindBtn.addEventListener('click', () => {
+        bindBtn.disabled = true;
+        translating = false; 
+        
+        sineupGroup.style.opacity = '1';
+        sineupLabel.style.opacity = '1';
+        sineupEdLabel.style.opacity = '1';
+        
+        setTimeout(() => {
+            ribosome.style.transition = 'left 1s ease, top 1s ease';
+            setRibosomePos(465, 280); 
+            bindBtn.innerText = 'SINEUP招募核糖体...';
+        }, 800);
+
+        setTimeout(() => {
+            setRibosomePos(150, 150); 
+            bindBtn.innerText = '核糖体递送至5\'端...';
+        }, 2200);
+
+        setTimeout(() => {
+            ribosome.style.transition = 'none'; 
+            progress = 0; 
+            speed = 0.006; 
+            dropInterval = 20; 
+            translating = true;
+            bindBtn.innerText = '翻译加速中...';
+        }, 3500);
+    });
+
+    const startPt = mrnaPath.getPointAtLength(0);
+    setRibosomePos(startPt.x, startPt.y);
+    requestAnimationFrame(animate);
+</script>
+</body>
+</html>

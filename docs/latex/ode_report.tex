@@ -1,0 +1,676 @@
+% !TEX program = tectonic
+\documentclass[UTF8,11pt,a4paper]{ctexart}
+
+\usepackage[a4paper,margin=2.2cm,headheight=15pt]{geometry}
+\usepackage{amsmath,amssymb,bm}
+\usepackage{booktabs,longtable,tabularx,array,multirow}
+\usepackage{graphicx,float,subcaption}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{siunitx}
+\usepackage{microtype}
+
+\definecolor{igemgreen}{HTML}{176B57}
+\definecolor{igemblue}{HTML}{2C6E9B}
+\definecolor{igemorange}{HTML}{D17A22}
+\definecolor{lightgreen}{HTML}{EAF4EF}
+\definecolor{lightblue}{HTML}{EDF4F8}
+\definecolor{lightgray}{HTML}{F4F5F6}
+\definecolor{warning}{HTML}{8A5A12}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=igemgreen,
+  citecolor=igemblue,
+  urlcolor=igemblue,
+  pdftitle={AAV-SINEUP 全身递送、细胞转导与 Spatial PK 项目技术报告},
+  pdfauthor={iGEM Dry Lab}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{AAV--SINEUP Spatial PK}
+\fancyhead[R]{iGEM Dry Lab 技术报告}
+\fancyfoot[C]{\thepage}
+
+\setlength{\parindent}{2em}
+\setlength{\parskip}{0.35em}
+\setlength{\emergencystretch}{1.5em}
+\setlist[itemize]{leftmargin=2em,itemsep=0.25em,topsep=0.35em}
+\setlist[enumerate]{leftmargin=2.2em,itemsep=0.25em,topsep=0.35em}
+\renewcommand{\arraystretch}{1.25}
+\graphicspath{{../../results/mouse_pbpk/}}
+
+\newcommand{\vg}{\mathrm{vg}}
+\newcommand{\AUC}{\mathrm{AUC}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\status}[1]{\textcolor{igemgreen}{\textbf{#1}}}
+\newcommand{\assumption}[1]{\textcolor{warning}{\textbf{建模假设：}#1}}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{lightgray},
+  frame=single,
+  rulecolor=\color{gray!30},
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false
+}
+
+\title{\vspace{-1.2cm}\textbf{AAV--SINEUP PBPK/ODE 技术附录}\\[0.6em]
+\large 方程、参数证据、数值验证与可辨识性}
+\author{iGEM Dry Lab 建模组}
+\date{2026 年 8 月}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\begin{minipage}{0.92\textwidth}
+\colorbox{lightgreen}{\parbox{0.96\textwidth}{
+\textbf{附录定位。}主报告讲述工程迭代、Contribution、Measurement 与安全性；本文件集中记录方程、参数证据、数值检查和模型边界。参数表由代码自动生成，避免文档与实现长期漂移。当前结果用于机制比较和实验设计，不用于临床剂量外推。
+}}
+\end{minipage}
+\end{center}
+
+\begin{abstract}
+本附录记录两条共享方程族的计算支路：64 状态鼠尺度 PBPK/胞内模型，以及 70 kg、24 区域、301 状态参考成人模型。前者包含肝、肾和 CNS 专门机制；后者重新定义循环拓扑、区域体积/流量、CSF 与六种给药入口。二者均以 amount 为状态、以 concentration 计算通量并显式累计损失。AAV9 早期 capsid PK 由鼠/NHP 数据约束，其余许多转导、route 和 SINEUP-PD 数值仍是待校准先验。附录因此把 parameter evidence 分为 direct、fitted、derived、scaled 与 assumed，而不把所有文献支持的机制都误写成“已测参数”。
+\end{abstract}
+
+\tableofcontents
+\clearpage
+
+\section{生物学问题与工程目标}
+
+\subsection{为什么选择 AAV--SINEUP 组合}
+许多单倍剂量不足疾病并不是完全缺失目标蛋白，而是一个等位基因失活或一段染色体缺失后，正常等位基因的表达量不足。SINEUP 是一类具有反义结合域和翻译增强效应域的非编码 RNA，可在不改变靶 mRNA 序列的前提下提高其翻译效率\cite{sineup2015}。因此，本项目的治疗构想是：
+\begin{enumerate}
+  \item 根据疾病、缺失区段和残余正常等位基因选择 SINEUP 靶标；
+  \item 选择能够到达目标器官和目标细胞层次的 AAV 衣壳；
+  \item 通过组织/细胞特异性调控控制脱靶表达；
+  \item 用模型预测递送量、转导瓶颈和单次给药的有效窗口；
+  \item 将预测送回湿实验，以更少的组合完成验证。
+\end{enumerate}
+
+该方案的关键困难在于，AAV 的“体内出现”并不等于“目标蛋白恢复”。从静脉给药到作用形成至少经历血液清除、器官分布、屏障跨越、受体结合、内吞、内体逃逸、入核、解包、双链化、episome 形成、RNA 表达和蛋白周转。模型的核心价值正是把这些步骤拆开，使每个设计变量对应可解释的生物学环节。
+
+\subsection{本阶段需要回答的问题}
+\begin{itemize}
+  \item 普通 AAV9 静脉给药后，肝、脾、肾、心、肌肉、肺、脑和其余组织的早期暴露如何比较？
+  \item 表观半衰期和器官摄取在数学上有何区别，如何避免“人为让曲线下降”？
+  \item 肝脏、肾近端小管和 CNS 的细胞内转导链分别有哪些瓶颈？
+  \item BBB 跨越和 CNS 深度分布如何影响神经系统疾病的衣壳排序？
+  \item 如何把 ODE 输出转化为用户可交互的二维设计空间，而不是手工评分表？
+  \item 如何进一步耦合流体力学，得到真正的 spatial PK？
+\end{itemize}
+
+\section{两阶段迭代：从原始模型到当前版本}
+
+\begin{longtable}{p{0.18\textwidth}p{0.35\textwidth}p{0.37\textwidth}}
+\toprule
+模块 & 原始工作 & 当前升级 \\
+\midrule
+\endfirsthead
+\toprule
+模块 & 原始工作 & 当前升级 \\
+\midrule
+\endhead
+全身分布 & 血液--器官血管--器官间质；主要关注肝脏 & 扩展到 8 个器官，加入脑血管/脑间质及器官特异性早期 capsid 损失 \\
+衰减 & 统一的血液、血管、ISF 半衰期项，主要用于形成钟形曲线 & 保留可切换的旧模式；默认采用可审计的机制式收支，并将器官半衰期先验拆分为血管清除与间质降解 \\
+肝脏 & 表面结合、内体、胞质、入核、episome、mRNA、蛋白 & 加入受体容量、显式降解去向、质量守恒 sink、场景参数接口和更清晰的峰值图 \\
+肾脏 & 初步摄取链，图形难以解释 & 构建滤过/管腔顶端与间质基底外侧双入口，加入回收、溶酶体、尿排和独立表达链 \\
+CNS & 无独立 CNS 模块或仅有器官间质 & 加入 BBB 结合--内吞--跨胞转运--回收--降解，以及神经细胞内转导链 \\
+CNS 空间层次 & 无 & 在批量导出器中加入浅层、皮层和深部三级转运，并为不同神经细胞/疾病配置深度权重 \\
+设计变量 & 单套参数 & 衣壳、启动子和内体逃逸等 presets；批量运行多个衣壳先验 \\
+验证 & 主要看曲线形状 & 增加累计给药、清除、尿排、胞内降解等 sink，逐时刻检查质量守恒 \\
+Spatial PK & 概念设想 & 完成一维对流--扩散--结合--内吞--episome 演示，明确 0D PBPK 到 CFD 的边界接口 \\
+前端 & 静态二维点图构想 & 疾病层级库、中英文切换、衣壳切换、效用背景区、模型证据卡和 ODE 数据导入 \\
+\bottomrule
+\end{longtable}
+
+\section{总体模型架构}
+
+\begin{figure}[H]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  node distance=7mm and 9mm,
+  box/.style={draw,rounded corners=2pt,align=center,minimum height=10mm,minimum width=28mm,fill=lightblue},
+  organ/.style={draw,rounded corners=2pt,align=center,minimum height=10mm,minimum width=28mm,fill=lightgreen},
+  arrow/.style={-{Latex[length=2.2mm]},thick,draw=gray!75}
+]
+\node[box] (dose) {静脉给药\\Dose input};
+\node[box,right=of dose] (blood) {中央血液\\$A_{blood}$};
+\node[organ,right=of blood] (pbpk) {8 器官 PBPK\\vascular $\leftrightarrow$ ISF};
+\node[organ,below left=of pbpk] (liver) {肝细胞\\binding $\to$ episome};
+\node[organ,below=of pbpk] (kidney) {肾近端小管\\双入口转导};
+\node[organ,below right=of pbpk] (cns) {BBB + CNS\\细胞转导};
+\node[box,below=18mm of kidney] (expr) {mRNA / SINEUP RNA\\蛋白恢复};
+\node[box,right=of expr] (space) {CNS 深度模型\\1D/未来 3D spatial PK};
+\node[box,left=of expr] (audit) {累计 sinks\\质量守恒审计};
+\node[box,below=of expr] (ui) {疾病--基因--器官--衣壳\\二维决策界面};
+\draw[arrow] (dose) -- (blood);
+\draw[arrow] (blood) -- (pbpk);
+\draw[arrow] (pbpk) -- (liver);
+\draw[arrow] (pbpk) -- (kidney);
+\draw[arrow] (pbpk) -- (cns);
+\draw[arrow] (liver) -- (expr);
+\draw[arrow] (kidney) -- (expr);
+\draw[arrow] (cns) -- (expr);
+\draw[arrow] (cns) -- (space);
+\draw[arrow] (expr) -- (audit);
+\draw[arrow] (expr) -- (ui);
+\draw[arrow] (space) -- (ui);
+\end{tikzpicture}
+}
+\caption{当前多尺度计算框架。全身 PBPK 提供器官边界暴露，器官特异性细胞转导模块产生 episome 和表达信号，批量导出器再计算 SINEUP-PD 与二维决策指标。}
+\label{fig:architecture}
+\end{figure}
+
+模型采用“量（amount）作为状态、浓度用于通量计算”的方式。这样不同有效体积之间的交换可以统一写成质量通量，且所有 AAV 状态与损失 sink 能够直接相加进行质量守恒审计。当前主模型包含血液、16 个器官外部状态（8 个 vascular + 8 个 ISF）、肝细胞链、肾脏链、CNS 链、抗体状态及累计收支状态。
+
+\section{全身 PBPK 模型}
+
+\subsection{给药输入}
+默认总剂量为 $D=10^{12}\,\vg$，在 $T_{inf}=10$ min 内以零级速率输入：
+\begin{equation}
+R_{in}(t)=
+\begin{cases}
+D/T_{inf}, & 0\le t\le T_{inf},\\
+0, & t>T_{inf}.
+\end{cases}
+\end{equation}
+代码同时支持 bolus 初始条件，便于比较给药方式对早期峰值的影响。
+
+\subsection{血液--器官血管--间质交换}
+对器官 $i$，定义
+\begin{equation}
+C_b=\frac{A_b}{V_b},\qquad C_{v,i}=\frac{A_{v,i}}{V_{v,i}},\qquad C_{isf,i}=\frac{A_{isf,i}}{V_{isf,i}}.
+\end{equation}
+血液到器官血管的有效交换通量与血管到间质的通量分别为
+\begin{align}
+J_{b\to v,i} &= Q_i(C_b-C_{v,i}),\\
+J_{v\to isf,i} &= PS_i\left(C_{v,i}-\frac{C_{isf,i}}{K_{p,i}}\right).
+\end{align}
+其中 $Q_i$ 是有效灌流/交换参数，$PS_i$ 是通透性--表面积乘积，$K_{p,i}$ 是组织分配系数。基本状态方程为
+\begin{align}
+\frac{\dd A_b}{\dd t} &= R_{in}-\sum_iJ_{b\to v,i}-J_{blood\,clear}-J_{neut},\\
+\frac{\dd A_{v,i}}{\dd t} &= J_{b\to v,i}-J_{v\to isf,i}-J_{res,i}+J_{return,i},\\
+\frac{\dd A_{isf,i}}{\dd t} &= J_{v\to isf,i}-J_{deg,isf,i}-J_{cell,i}+J_{recycle,i}.
+\end{align}
+脑、肾和肝的细胞摄取会进一步修改对应的 $J_{cell,i}$；BBB 回收、肾内体回收等则通过 $J_{return}$ 或 $J_{recycle}$ 返回外部池。
+
+\subsection{衰减：半衰期方程与机制式损失的区别}
+一阶半衰期衰减的数学形式为
+\begin{equation}
+\frac{\dd A}{\dd t}=-kA,\qquad k=\frac{\ln2}{t_{1/2}},\qquad A(t)=A_0e^{-kt}.
+\end{equation}
+它只规定“以多快的速度消失”，并不说明 AAV 去了哪里。早期版本对 blood、vascular 和 ISF 分别施加统一的 $k$，因此曲线可以形成峰后下降，但该下降较像人为加入的经验项。
+
+当前默认的 \code{mechanistic} 模式把损失写入明确的累计通道：中央血液清除、器官血管/内皮清除、间质降解、抗体中和、肝细胞内损失、肾尿排与胞内降解、BBB/CNS 降解。器官半衰期先验仍通过 $k=\ln2/t_{1/2}$ 转成速率，但当前暂按
+\begin{equation}
+k_{res,i}=0.35\frac{\ln2}{t_{1/2,i}},\qquad
+k_{deg,isf,i}=0.65\frac{\ln2}{t_{1/2,i}}
+\end{equation}
+分配到血管/内皮与 ISF 两个去向。
+
+\assumption{35\%/65\% 的拆分不是文献直接测得的机制比例，而是为了把“总表观损失”映射到可审计通道的暂定结构。后续应由组织时间序列和细胞共定位数据估计。}
+
+\begin{table}[H]
+\centering
+\caption{当前普通 AAV9 早期完整/标记 capsid 半衰期先验。单位为小时。}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+池/器官 & 血液 & 肝 & 脾 & 肾 & 心 & 肌肉 & 肺 & 脑 & 其余 \\
+\midrule
+$t_{1/2}$ & 2.4 & 22.6 & 22.9 & 24.0 & 15.6 & 48.7 & 18.0 & 24.8 & 34.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+血液、肝、心、脾、脑/CSF 和全身值主要参考放射标记 AAV 的早期成像尺度\cite{ballon2020}；肾与肺当前是明确标注的 provisional mouse-scale prior。放射信号、完整有感染能力的 capsid、vector genome 和表达性 episome 是不同 analyte，不能混为同一个“半衰期”\cite{bioanalytical2023}。
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\linewidth]{13_normal_aav9_organ_concentration_comparison_log_axes.png}
+\caption{双对数轴。}
+\end{subfigure}
+\begin{subfigure}{0.49\textwidth}
+\includegraphics[width=\linewidth]{14_normal_aav9_organ_concentration_comparison_linear_axes.png}
+\caption{线性轴。}
+\end{subfigure}
+\caption{普通 AAV9-like 基线的多器官浓度比较。对数坐标用于同时观察早期血液峰值和低暴露脑间质；另输出全线性轴版本用于直观比较绝对峰值。}
+\label{fig:organ}
+\end{figure}
+
+\section{肝脏细胞转导模型}
+
+\subsection{受体容量与摄取}
+肝间质 AAV 与有限受体池结合：
+\begin{align}
+R_{free}&=\max(R_{tot}-B,0),\\
+J_{bind}&=k_{on}C_{liver,isf}R_{free}-k_{off}B,\\
+\frac{\dd B}{\dd t}&=J_{bind}-k_{int}B.
+\end{align}
+与单纯的一阶摄取 $kA$ 相比，该形式包含受体饱和、解离和内吞三个可独立调节环节。AAVR 已被证明是多种 AAV 血清型感染的重要宿主受体\cite{pillay2016}，但本模型的 $R_{tot}$ 是一个 lumped effective receptor capacity，尚未区分 glycan attachment、AAVR、辅助受体与细胞类型。
+
+\subsection{胞内运输链}
+肝模块使用
+\[
+B\rightarrow EE\rightarrow LE\rightarrow CY\rightarrow Ncap
+\rightarrow Nss\rightarrow Nds\rightarrow Epi
+\]
+描述内吞、早/晚内体、内体逃逸、胞质、核 capsid、单链基因组、双链基因组和表达性 episome。代表性方程为
+\begin{align}
+\dot{EE}&=k_{int}B-(k_{ee\to le}+k_{rec}+k_{deg,ee})EE,\\
+\dot{LE}&=k_{ee\to le}EE-(k_{escape}+k_{lys})LE,\\
+\dot{CY}&=k_{escape}LE-(k_{nuc}+k_{uncoat,cy}+k_{deg,cy})CY,\\
+\dot{Nss}&=k_{uncoat,cy}CY+k_{uncoat,nuc}Ncap-(k_{ds}+k_{deg,ss})Nss,\\
+\dot{Epi}&=k_{epi}Nds-(k_{loss,epi}+k_{dil})Epi.
+\end{align}
+该链使“衣壳进入组织”和“最终表达”不再是同一指标。尤其 $k_{escape}$ 较小时，大量 capsid 会流入溶酶体损失；提高器官暴露不一定能等比例提高表达\cite{trafficking2012,trafficking2021}。
+
+\subsection{表达模块}
+episome 驱动的转录使用 Hill 饱和函数：
+\begin{align}
+v_{tx}(Epi)&=k_{tx}\frac{Epi^h}{EC_{50}^h+Epi^h},\\
+\dot M&=v_{tx}-k_{deg,m}M,\\
+\dot P&=k_{tl}M-k_{deg,p}P.
+\end{align}
+当前 $t_{1/2,m}=6$ h、$t_{1/2,p}=48$ h，因此 $k_{deg,m}=\ln2/6$ h$^{-1}$、$k_{deg,p}=\ln2/48$ h$^{-1}$。mRNA 与蛋白拥有不同量纲与数量级，最新版绘图将二者拆为独立坐标轴，避免小量级 mRNA 被蛋白曲线压扁。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{03_liver_intracellular_56d.png}
+\caption{肝脏从早期间质/受体结合到胞内运输、核内基因组处理及表达输出。左上重点显示早期峰值，右下将 mRNA 与蛋白拆轴。}
+\end{figure}
+
+\section{肾近端小管多层模型}
+
+\subsection{为什么采用双入口}
+完整 AAV capsid 的尺寸使其大量自由通过肾小球并不合理。因此模型将肾转导分成两条路径：
+\begin{enumerate}
+  \item \textbf{受限滤过--管腔顶端路径：}肾血管 $\to$ 少量 apparent filtrate $\to$ 近端小管管腔 $\to$ 顶端受体结合；
+  \item \textbf{间质--基底外侧路径：}肾血管 $\to$ 肾 ISF $\to$ 近端小管细胞基底外侧结合。
+\end{enumerate}
+滤过通量与尿排写为
+\begin{align}
+J_{filter}&=k_{filter}A_{kidney,v},\\
+J_{filtrate\to PT}&=k_{f\to pt}K_{filtrate},\\
+J_{urine}&=k_{urine}K_{lumen}.
+\end{align}
+顶端和基底外侧结合均采用有限容量形式，例如
+\begin{equation}
+J_{bind,ap}=k_{on,ap}C_{lumen}(B_{max,ap}-B_{ap})-k_{off,ap}B_{ap}.
+\end{equation}
+顶端路径可被视为 megalin/cubilin-like lumped uptake，但当前不能声称已识别具体 AAV 受体；megalin/cubilin 主要提供近端小管受体介导内吞的结构依据\cite{megalin2002}。
+
+\subsection{回收、溶酶体和表达}
+两条入口汇入 $K_{EE}$，随后分流至回收内体 $K_{REC}$、晚期内体 $K_{LE}$、溶酶体 $K_{LYS}$ 或胞质逃逸。回收池返回管腔，尿排累计进入 $K_{Urine}$，所有胞内降解累计进入 $K_{Deg}$。这一结构能分别回答“进入肾脏”“进入近端小管细胞”“形成 episome”和“最终表达”四个层次的问题。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{06_kidney_multilevel_module.png}
+\caption{肾近端小管双入口与胞内命运。左上聚焦 0--96 h 的早期峰值；右下 mRNA 与蛋白分轴显示。}
+\end{figure}
+
+基线仿真中，肾 ISF amount AUC 为 $3.269\times10^{12}$ vg-equivalent$\cdot$h，约为肝 ISF amount AUC 的 0.532；峰值肾 episome 为 $1.038\times10^5$。以上为当前参数下的模型内部量，不应直接解释为真实动物组织中完整且仍具有感染能力的 AAV 数量。
+
+\section{BBB 与 CNS 转导模型}
+
+\subsection{脑器官室与 BBB}
+全身 PBPK 中新增脑血管 $A_{brain,v}$ 与脑间质 $A_{brain,isf}$。普通 AAV9 基线设置较小被动 $PS_{brain}$，并用独立 BBB 受体介导路径表示结合、内吞、跨胞转运、回收和降解：
+\begin{align}
+J_{BBB,bind}&=k_{on,BBB}C_{brain,v}(B_{max,BBB}-B_{BBB})-k_{off,BBB}B_{BBB},\\
+\dot B_{BBB}&=J_{BBB,bind}-k_{int,BBB}B_{BBB},\\
+\dot E_{BBB}&=k_{int,BBB}B_{BBB}-(k_{trans}+k_{recycle}+k_{deg,BBB})E_{BBB}.
+\end{align}
+其中 $k_{trans}E_{BBB}$ 进入脑 ISF，$k_{recycle}E_{BBB}$ 返回脑血管。跨 BBB 后，AAV 再经历 CNS 细胞受体结合、内吞、内体逃逸、入核、解包和 episome 形成，与肝/肾共享相同的机制骨架，但拥有独立参数。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.98\textwidth]{11_cns_bbb_and_transduction.png}
+\caption{CNS 模块输出。脑血管早期峰与 BBB/脑间质小量级状态分开显示；BBB/ISF 使用对数纵轴；mRNA 与蛋白独立成图。}
+\end{figure}
+
+基线模型得到脑 ISF amount AUC $5.677\times10^{10}$ vg-equivalent$\cdot$h，约为肝 ISF amount AUC 的 0.92\%；峰值 CNS episome 为 $1.229\times10^4$，峰值蛋白信号为 102.79 a.u.。在演示性的 CNS-tropic 参数组合下，BBB/CNS capsid 增强将峰值 CNS episome 提高到约 $1.336\times10^6$；再叠加 CNS-biased promoter 后，峰值 CNS 蛋白信号达到约 $5.697\times10^3$。这些比较说明屏障跨越、细胞内逃逸和表达调控是可叠加但不等价的设计杠杆。
+
+\subsection{BBB 后三级深度模型}
+为了让不同 CNS 疾病不再共享同一套“脑数据”，批量导出器在 $A_{brain,isf}(t)$ 之后继续求解浅表/血管周围层 $S$、皮层实质 $C$ 和深部核团 $D$：
+\begin{align}
+\dot S &=0.55\,u(t)-(0.18+0.08)S+0.025C,\\
+\dot C &=0.18S-(0.025+0.025+0.035)C+0.012D,\\
+\dot D &=0.025C-(0.012+0.050)D,
+\end{align}
+其中 $u(t)=A_{brain,isf}(t)/D_{dose}$。疾病/细胞类型 $j$ 的可接近信号为
+\begin{equation}
+X_j(t)=a_j\left(w_{S,j}S+w_{C,j}C+w_{D,j}D\right),
+\end{equation}
+再进入 reduced binding--endosome--cytosol--nucleus--episome ODE。不同 profile 拥有不同深度权重、cell-access factor、目标深度和持久性修正。例如 cortical excitatory 偏浅层和皮层，deep striatal 与 hypothalamic 偏深层，neural progenitor 还加入较低持久性因子。
+
+\assumption{当前三级深度是 reduced-order compartment model，不是脑解剖网格，也没有显式细胞迁移、轴突运输、CSF 循环或区域血流。它用于产生可解释的疾病间差异，并作为未来 3D 模型的降阶原型。}
+
+\section{SINEUP 药效动力学与持久性}
+
+前端的“持续时间”不是直接由一个手填分数给出，而是由 PBPK/胞内 ODE 输出的相对 episome 递送信号驱动一个 0--730 d 的 SINEUP-PD 模型。对同一器官/同一 CNS profile，先将各衣壳的 episome AUC 归一化：
+\begin{equation}
+E_0=\frac{\AUC_{Epi,capsid}}{\max_c\AUC_{Epi,c}}.
+\end{equation}
+随后求解
+\begin{align}
+\dot E &=-k_{loss,E}E,\qquad k_{loss,E}=\frac{\ln2}{t_{1/2,E}},\\
+\dot S_{RNA}&=k_{S}\frac{E}{EC_{50,E}+E}-k_{deg,S}S_{RNA},\\
+G(S_{RNA})&=G_{max}\frac{S_{RNA}}{EC_{50,S}+S_{RNA}},\\
+P_{set}&=\min\left[1,\,0.5(1+G)\right],\\
+\dot P&=k_{turn}(P_{set}-P).
+\end{align}
+基线将单倍剂量不足的蛋白设为 50\%，当预测蛋白达到 65\% 以上时计入有效治疗窗口。网页纵轴使用最后一次高于 65\% 阈值的时间作为 \code{effective\_duration\_days}。当前 SINEUP RNA 半衰期为 0.25 d，目标蛋白半衰期为 2 d，episome 半衰期由器官先验和衣壳 persistence factor 决定。
+
+这套结构的重要意义在于：纵轴同时受初始递送、episome 保持、SINEUP RNA 周转和内源蛋白周转影响，而不是简单把 capsid 半衰期当成疗效持续时间。
+
+\section{数值求解、时间网格与质量守恒}
+
+\subsection{积分策略}
+ODE 使用 SciPy \code{solve\_ivp} 的刚性求解器 BDF。由于 10 min 输注终点导致输入函数不连续，模型在 $T_{inf}$ 处分段积分，并对早期时间使用更密集网格。短期网格用于观察分钟至小时的分布峰，长期网格延伸至 56 d 用于观察 episome、mRNA 和蛋白动态。批量衣壳计算使用 0--72 h 网格，以控制前端数据生成成本。
+
+\subsection{质量守恒审计}
+定义所有仍存在的 AAV 状态与累计损失 sink 之和为 $A_{accounted}$：
+\begin{align}
+A_{accounted}={}&A_{extracellular}+A_{liver,vector}+A_{kidney,vector}+A_{CNS,vector}\\
+&+K_{Urine}+K_{Deg}+C_{Deg}+L_{blood}+L_{vascular}+L_{ISF}+L_{neut}+L_{liver}.
+\end{align}
+相对误差为
+\begin{equation}
+\epsilon_{mass}(t)=\frac{A_{accounted}(t)-Dose_{in}(t)}{\max(Dose_{in}(t),10^{-30})}.
+\end{equation}
+基线完整运行的最终误差为 $-3.418\times10^{-15}$，不同设计场景保持在 $10^{-14}$ 数量级。这证明 ODE 状态转移与累计 sink 在数值上闭合，但\textbf{质量守恒不能替代参数校准或生物学验证}。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.84\textwidth]{08_mass_balance_audit.png}
+\caption{质量守恒审计输出。模型将清除和降解作为显式累计状态，而不是让向量从方程中无去向地消失。}
+\end{figure}
+
+\section{衣壳与启动子场景比较}
+
+主模型提供 capsid 与 promoter 两层 preset。capsid 层可改变器官 $PS/K_p$、受体结合、BBB 跨越和内体逃逸；promoter 层只改变 episome 之后的组织表达参数。这样可以避免把“送得更多”和“表达得更多”混成同一个参数。
+
+\begin{table}[H]
+\centering
+\caption{当前主模型场景结果摘要。数值是模型单位，用于场景内比较。}
+\begin{tabularx}{\textwidth}{lrrrr}
+\toprule
+场景 & 肝峰值 Epi & 肾峰值 Epi & 肝峰值蛋白 & 肾峰值蛋白 \\
+\midrule
+Baseline & 4,683 & 103,806 & 5,913 & 3,588 \\
+Liver detargeted & 2,798 & 100,847 & 5,854 & 3,587 \\
+Kidney tropic + kidney promoter & 4,679 & 357,155 & 2,661 & 6,229 \\
+Endosomal escape enhanced & 11,562 & 247,864 & 5,962 & 3,592 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+例如，增强内体逃逸显著提高了肝和肾 episome，但由于表达 Hill 函数接近饱和，峰值蛋白并未等比例提高。这是机制模型相对于线性评分的优势：它能揭示某个优化是否已被下游瓶颈“截断”。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{09_design_scenario_comparison.png}
+\caption{基线、肝脱靶、肾嗜性和内体逃逸增强场景的比较。}
+\end{figure}
+
+\section{二维设计空间与疾病数据库}
+
+\subsection{从 ODE 输出到二维坐标}
+每个“目标器官/细胞 profile--衣壳”组合形成一个点。横轴是器官特异性：
+\begin{equation}
+S_{organ}=\log_{10}\left(
+\frac{\AUC(C_{target,isf})}
+{\operatorname{mean}_{i\ne target}[w_i\AUC(C_{i,isf})]}
+\right),
+\end{equation}
+其中 $w_i$ 是脱靶毒性权重。纵轴是上一节 SINEUP-PD 数值求解得到的有效持续时间。点的详情还显示峰值 post-barrier delivery、目标暴露份额、tmax、证据等级、物种来源、转导模型类型和质量守恒误差。
+
+背景色不是额外修改计算结果，而是把二维空间划分为四个设计语义区：
+\begin{itemize}
+  \item 高特异性、长持续：优先候选；
+  \item 高特异性、短持续：适合需要可逆性或可重复给药的情况；
+  \item 低特异性、长持续：需警惕长期脱靶表达；
+  \item 低特异性、短持续：通常效用较低。
+\end{itemize}
+
+\subsection{衣壳先验与证据标签}
+当前数据库包含 AAV2、AAV5、AAV8、AAV9、AAVrh.10、PHP.eB、CAP-B10 和 AAV-LK03。先验通过缩放器官 $PS_i$、$K_{p,i}$ 和 BBB transcytosis 映射到 PBPK，而不是直接手填最终二维坐标。不同来源跨越 mouse、NHP、human-hepatocyte prior 和临床/局部眼科证据，因此前端明确显示 strong、medium、exploratory，并保留 source 链接。PHP.eB 等衣壳的物种依赖尤其需要显著提示，不能将特定小鼠受体背景中的 CNS 嗜性直接外推到人。
+
+\subsection{疾病--基因层级库}
+疾病库采用“疾病列表--展开基因”的层级结构。Wolf--Hirschhorn syndrome 不再是单一记录，而是包含 NSD2、LETM1、WHSC1/相关区段基因和 CPLX1 等多个候选靶点；同时加入 CHD8、SCN1A/Dravet、SHANK3/Phelan--McDermid、EHMT1/Kleefstra、RAI1/Smith--Magenis、NSD1/Sotos、SATB2、MEF2C、FOXP1、TCF4、SYNGAP1、DYRK1A、NRXN1、PAFAH1B1、ANKRD11 等单倍剂量不足或缺失相关疾病。每条记录包含 locus、目标器官、目标细胞、机制、残余等位基因要求、注意事项和 ClinGen 证据入口。
+
+CNS 疾病会进一步映射到 cortical excitatory、cortical inhibitory、cortical projection、synaptic neuron、deep striatal、hypothalamic、broad neuronal 或 neural progenitor profile。于是同一衣壳在不同疾病中会因目标深度和细胞可接近性而得到不同的特异性及持续性，不再是一套数据复用。
+
+\subsection{前端实现与数据来源证明}
+前端采用中英文切换、独立可滚动疾病库、可展开疾病组、全部衣壳切换、模型/代理标签和证据卡。数据文件由 \code{export\_delivery\_design\_space.py} 批量运行 \code{ode1.0.py} 后生成 JSON/CSV；页面只负责筛选和可视化，不在浏览器中重新编造分数。模型生成时间固定为 UTC 字符串，避免服务端和客户端使用本地时区格式化造成 React hydration mismatch。
+
+\section{Spatial PK 与流体力学路线}
+
+\subsection{已完成的一维演示}
+当前一维模型在归一化血管/组织轴 $x$ 上求解对流--扩散--受体摄取：
+\begin{equation}
+\frac{\partial C}{\partial t}+u\frac{\partial C}{\partial x}
+=D\frac{\partial^2C}{\partial x^2}-J_{uptake}(C,B),
+\end{equation}
+并在每个网格点计算
+\begin{align}
+\dot B&=k_{on}C(B_{max}-B)-k_{off}B-k_{int}B,\\
+\dot I&=k_{int}B-k_{escape}I-k_{lys}I,\\
+\dot E&=k_{escape}I-k_{loss,E}E.
+\end{align}
+入口边界 $C(0,t)$ 来自 0D PBPK 的血液浓度曲线。演示比较 baseline IV-like、capsid wall-access enhanced 和 slow-flow local trapping，说明即使总给药相同，流速、停留时间和壁面摄取也会改变最终 episome 的空间均匀度。
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.88\textwidth]{10_spatial_pk_1d_demo.png}
+\caption{一维 spatial PK 演示：PBPK 作为入口边界，局部流动和壁面摄取共同塑造表达性 episome 的空间分布。}
+\end{figure}
+
+\subsection{未来 3D CNS 模型}
+下一阶段可建立从血管到脑实质的 3D advection--diffusion--reaction 模型：
+\begin{align}
+\nabla\cdot\bm u&=0,\\
+\rho\left(\frac{\partial\bm u}{\partial t}+\bm u\cdot\nabla\bm u\right)&=-\nabla p+\mu\nabla^2\bm u,\\
+\frac{\partial C}{\partial t}+\nabla\cdot(\bm uC)&=\nabla\cdot(D\nabla C)-R_{uptake}(C,\bm x).
+\end{align}
+推荐分四步实施：
+\begin{enumerate}
+  \item 用理想化毛细血管--周血管--实质圆柱几何完成 2D axisymmetric 原型；
+  \item 将 BBB 通量设为 Robin 边界，参数由当前 ODE 的 $k_{BBB}$ 和受体容量转换；
+  \item 加入脑区分层的扩散系数、细胞密度、受体密度和外排/降解；
+  \item 使用成像或组织切片校准空间参数，再导出降阶参数回填网页的 CNS profile。
+\end{enumerate}
+若有 MRI/血管图谱，可进一步构建个体化几何；若没有，先用理想化微血管单元比直接上全脑网格更容易验证。对 CSF 或局部脑内给药，还需加入 CSF bulk flow、pulsatility 和 perivascular transport。PET 研究表明，即使向 CSF 给药，也可能有显著系统外流和外周器官暴露，因此未来模型必须同时保留 CNS 与全身收支\cite{csfpet2023}。
+
+\section{湿实验闭环}
+
+\begin{table}[H]
+\centering
+\caption{模型参数、可测量数据与实验反馈关系。}
+\begin{tabularx}{\textwidth}{p{0.22\textwidth}p{0.30\textwidth}X}
+\toprule
+模型环节 & 推荐实验 & 可校准参数/判别问题 \\
+\midrule
+血液与器官分布 & 血浆及肝/脾/肾/心/肌/肺/脑 qPCR 或 ddPCR 时间序列 & $Q_i,PS_i,K_{p,i},k_{clear}$；区分早期分布与后期残留 \\
+完整 capsid 命运 & capsid ELISA/免疫染色、放射或荧光标记成像 & 表观 capsid PK；避免仅用 vg 信号解释完整病毒 \\
+细胞类型摄取 & 组织切片与 hepatocyte、Kupffer、PT、endothelium、neuron/glia marker 共定位 & $B_{max},k_{on},k_{int}$ 及细胞类型份额 \\
+胞内运输 & 亚细胞分级、内体/溶酶体/核共定位 & $k_{escape},k_{lys},k_{nuc},k_{uncoat}$ \\
+episome & 核内 vector genome、双链/环状 episome 测定 & $k_{ds},k_{epi},k_{loss,Epi}$ \\
+SINEUP RNA & RT-qPCR、RNA half-life、构建特异表达 & $k_{S},k_{deg,S}$，不同 SINEUP 元件比较 \\
+蛋白恢复 & western blot、ELISA、功能 readout & 翻译增益、蛋白周转、65\% 阈值的生物学合理性 \\
+空间分布 & 全器官成像、分区取样、空间转录/蛋白检测 & $D,u,R_{uptake}$ 与 CNS 深度权重 \\
+免疫 & NAb、补体、细胞因子及重复给药实验 & $k_{neut}$、免疫清除和重复给药限制 \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+推荐最小闭环是：先选择 2--3 个衣壳、1 个报告系统和肝/肾/脑三个组织，在 0.5 h、2 h、8 h、24 h、72 h、7 d 和 28 d 取样。早期测 vector/capsid，后期测 episome、RNA 和蛋白。用早期数据拟合 PBPK 与摄取，用后期数据拟合表达和持久性，再重新生成二维点图。这样网页中的候选排序会随实验数据更新，而不是停留在固定文献先验。
+
+\section{完整参数注册表与证据等级}
+
+下表由 \code{python model/export\_parameter\_registry.py} 从实际代码生成。\textbf{direct} 表示直接转录，\textbf{fitted} 表示由源数据拟合，\textbf{derived} 表示由有来源的量计算，\textbf{scaled} 表示跨区域/物种转化，\textbf{assumed} 表示当前数值是透明先验。一个参数可以具有文献支持的机制，但数值仍为 assumed；例如 AAVR 和内体运输有充分机制依据，却没有为本构建拟合出 \code{k\_on} 或 \code{k\_escape}。
+
+\IfFileExists{generated_parameter_table.tex}{%
+  \input{generated_parameter_table.tex}
+}{%
+  \begin{center}
+  \fbox{请先运行 \code{python model/export\_parameter\_registry.py} 生成参数表。}
+  \end{center}
+}
+
+\section{可辨识性与校准优先级}
+
+当前最容易从权威数据获得的是参考人体解剖体积、血流、CSF 体积/生成量，以及具有明确 analyte、物种、途径和时间点的早期 AAV9 PET/放射示踪数据。其次是同一研究内的 capsid head-to-head biodistribution。最难直接获得的是器官特异 $PS/K_p$、血管与 ISF 损失拆分、细胞受体容量、内体逃逸、解包、episome 丢失和目标特异 SINEUP gain。
+
+仅用组织 vector genome 时间序列通常无法同时识别 $PS_i,K_{p,i},k_{res,i},k_{deg,isf,i}$；仅用蛋白曲线也无法区分递送、episome、RNA 与翻译。推荐按层校准：早期 blood/tissue capsid 或 vg 约束 transport，细胞/亚细胞实验约束 uptake/escape，后期 episome/RNA/protein 约束 PD，并保留一个时间点、剂量或衣壳作为外部验证。对于仍不可辨识的组合，应报告 profile likelihood 或 posterior correlation，而不是给每个参数一个看似精确的点估计。
+
+\section{当前结果应该如何解释}
+
+\subsection{可以支持的结论}
+\begin{itemize}
+  \item 模型在结构上连接了系统暴露、屏障跨越、细胞摄取、胞内运输和表达输出；
+  \item 普通 AAV9-like 参数下，脑间质暴露显著低于肝脏，BBB 是明确瓶颈；
+  \item 肾脏不能只用“滤过”解释，基底外侧摄取和胞内分流会显著改变转导；
+  \item 内体逃逸增强可显著增加 episome，但蛋白输出可能因下游饱和而增幅有限；
+  \item 衣壳、启动子和局部流动作用于不同层级，应分别优化；
+  \item 二维图适合做候选筛选和实验优先级排序。
+\end{itemize}
+
+\subsection{目前不能支持的结论}
+\begin{itemize}
+  \item 不能把当前 vg-equivalent 或 a.u. 直接换算为人体治疗剂量；
+  \item 不能将放射标记 capsid 半衰期等同于感染性 capsid、vector genome 或表达持续时间；
+  \item 不能把小鼠衣壳 tropism 直接外推到 NHP 或人；
+  \item 不能仅凭器官 AUC 预测 CNS 细胞类型疗效；
+  \item 不能将 Eye、Heart、Muscle 的 reduced surrogate 与肝/肾/CNS 原生胞内 ODE 视为同等证据；
+  \item 不能用质量守恒误差很小来证明生物学参数正确。
+\end{itemize}
+
+\section{代码组织、复现与跨电脑展示}
+
+\subsection{核心文件}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.35\textwidth}>{\raggedright\arraybackslash}p{0.55\textwidth}}
+\toprule
+文件/目录 & 作用 \\
+\midrule
+\endfirsthead
+\toprule
+文件/目录 & 作用 \\
+\midrule
+\endhead
+\path{model/ode1.0.py} & 全身 PBPK、肝/肾/CNS 胞内 ODE、场景模拟、质量守恒和绘图 \\
+\path{model/human_spatial_pbpk.py} & 70 kg 参考成人区域 PBPK、CSF 与多途径输入 \\
+\path{model/export_delivery_design_space.py} & 批量运行衣壳，计算 CNS 深度、SINEUP-PD、二维指标并输出 JSON/CSV \\
+\path{model/export_parameter_registry.py} & 自动生成参数 CSV/JSON 与本附录长表 \\
+\path{results/mouse_pbpk/} & 模型图片及指标 CSV \\
+\path{sineup-delivery-atlas/} & 疾病库与二维交互前端，读取 \path{public/data/model-results.json} \\
+\path{docs/} & 建模报告、汇报材料和本 LaTeX 源文件 \\
+\bottomrule
+\end{longtable}
+
+\subsection{推荐迁移流程}
+在新电脑安装 Git、Miniconda/Anaconda 和 Node.js 后：
+\begin{lstlisting}[language=bash]
+git clone https://github.com/zzx060827/iGEM_ODE.git
+cd iGEM_ODE
+
+conda create -n transformer python=3.11 -y
+conda activate transformer
+pip install numpy scipy matplotlib
+
+python model/export_parameter_registry.py
+python model/export_delivery_design_space.py \
+  --output sineup-delivery-atlas/public/data/model-results.json
+
+cd sineup-delivery-atlas
+npm install
+npm run dev
+\end{lstlisting}
+浏览器访问终端显示的本地地址即可展示。正式迁移前应确保前端目录以普通文件或 Git subtree/submodule 的正确形式进入仓库；不能只提交一个缺少 \code{.gitmodules} 的 gitlink。演示前还应运行 \code{npm run build}，并保留一份静态数据快照，防止现场重新计算失败。
+
+\subsection{可复现性清单}
+\begin{itemize}
+  \item 固定 Python/Node 版本并补充 \code{environment.yml} 或 \code{requirements.txt}；
+  \item 在数据 JSON 中保留生成时间、模型 commit、参数版本和参考物种；
+  \item 将文献先验、拟合参数与演示参数放入分开的表；
+  \item 自动检查 ODE 成功状态、非负性、质量守恒和输出文件；
+  \item 前端只消费已版本化模型输出，不在客户端使用随机数或本地时区生成首屏文本；
+  \item 为答辩准备无网络本地版本和已生成 PDF/PNG 结果。
+\end{itemize}
+
+\section{下一阶段路线图}
+
+\begin{enumerate}
+  \item \textbf{参数分层：}将 physiology、capsid、cell-fate、immune、PD 和 numerical settings 拆成独立配置，并为每个参数增加 unit、species、source、confidence。
+  \item \textbf{校准接口：}读取实验 CSV，用最小二乘或 Bayesian 方法估计 $PS,K_p,k_{res},k_{escape},k_{epi}$，输出置信区间和可辨识性。
+  \item \textbf{数据层：}建立可查询的 disease--gene--cell--capsid 数据库，保留 PMID/DOI、实验物种、给药途径、剂量、时间点和 assay。
+  \item \textbf{不确定性：}进行 Latin hypercube/Monte Carlo 和 Sobol sensitivity，二维点显示置信椭圆而非单点。
+  \item \textbf{免疫模块：}将 NAb、补体、Kupffer/splenic uptake 和重复给药影响加入显式状态。
+  \item \textbf{CNS 空间模型：}从理想化 2D 微血管单元开始，再升级至区域化 3D 几何；用实验空间分布校准。
+  \item \textbf{多目标优化：}在目标表达、脱靶 AUC、剂量、免疫风险和空间均匀性之间计算 Pareto front。
+  \item \textbf{湿实验闭环：}每轮实验更新参数后自动重跑、导出数据并刷新前端，形成真正的 design--build--test--learn 循环。
+\end{enumerate}
+
+\section{汇报用结论}
+
+本项目已经从“让 AAV 曲线出现峰值和衰减”的单器官演示，发展为一个可追踪 AAV 去向的多器官、多屏障、多胞内步骤模型。模型最重要的升级不是增加了更多曲线，而是建立了从系统给药到最终蛋白恢复的因果链：PBPK 决定器官入口，受体和屏障决定细胞可达性，胞内运输决定 episome，SINEUP-PD 决定蛋白恢复及持续时间，spatial PK 决定同一器官内部是否均匀到达。二维前端把这条计算链转化为疾病和衣壳的交互决策工具，同时公开模型来源、代理假设和证据强度。
+
+当前工作已经适合用于 iGEM 项目展示、机制假设比较和湿实验优先级设计。下一步的科学重点不是继续手工增加参数，而是用成体系的早期分布、细胞共定位、episome、RNA 和蛋白数据完成校准与不确定性分析，使“模型算出的递送效率”逐步转化为有实验置信区间的预测。
+
+\clearpage
+\begin{thebibliography}{99}
+
+\bibitem{pbpk2024}
+Liu S, Chowdhury EA, Xu V, et al. Whole-Body Disposition and Physiologically Based Pharmacokinetic Modeling of Adeno-Associated Viruses and the Transgene Product. \textit{J Pharm Sci}. 2024;113(1):141--157. \href{https://doi.org/10.1016/j.xphs.2023.10.005}{doi:10.1016/j.xphs.2023.10.005}.
+
+\bibitem{ballon2020}
+Ballon DJ, Rosenberg JB, Fung EK, et al. Quantitative Whole-Body Imaging of I-124-Labeled Adeno-Associated Viral Vector Biodistribution in Nonhuman Primates. \textit{Hum Gene Ther}. 2020;31(23--24):1237--1259. \href{https://doi.org/10.1089/hum.2020.116}{doi:10.1089/hum.2020.116}.
+
+\bibitem{pillay2016}
+Pillay S, Meyer NL, Puschnik AS, et al. An essential receptor for adeno-associated virus infection. \textit{Nature}. 2016;530:108--112. \href{https://doi.org/10.1038/nature16465}{doi:10.1038/nature16465}.
+
+\bibitem{trafficking2012}
+Nonnenmacher M, Weber T. Intracellular transport of recombinant adeno-associated virus vectors. \textit{Gene Ther}. 2012;19:649--658. \href{https://doi.org/10.1038/gt.2012.6}{doi:10.1038/gt.2012.6}.
+
+\bibitem{trafficking2021}
+Riyad JM, Weber T. Intracellular trafficking of adeno-associated virus (AAV) vectors: challenges and future directions. \textit{Gene Ther}. 2021. \href{https://doi.org/10.1038/s41434-021-00243-z}{doi:10.1038/s41434-021-00243-z}.
+
+\bibitem{engineering2020}
+Li C, Samulski RJ. Engineering adeno-associated virus vectors for gene therapy. \textit{Nat Rev Genet}. 2020;21:255--272. \href{https://doi.org/10.1038/s41576-019-0205-4}{doi:10.1038/s41576-019-0205-4}.
+
+\bibitem{immunity2020}
+Vandamme C, Adjali O, Mingozzi F. Unraveling the complex story of immune responses to AAV vectors trial after trial. \textit{Hum Gene Ther}. 2017;28:1061--1074. \href{https://doi.org/10.1089/hum.2017.150}{doi:10.1089/hum.2017.150}.
+
+\bibitem{bioanalytical2023}
+PK/PD and Bioanalytical Considerations of AAV-Based Gene Therapies: an IQ Consortium Industry Position Paper. 2023. \href{https://pubmed.ncbi.nlm.nih.gov/37523051/}{PubMed 37523051}.
+
+\bibitem{megalin2002}
+Christensen EI, Birn H. Megalin and cubilin: multifunctional endocytic receptors. \textit{Nat Rev Mol Cell Biol}. 2002;3:256--266. \href{https://doi.org/10.1038/nrm778}{doi:10.1038/nrm778}.
+
+\bibitem{sineup2015}
+Zucchelli S, Fasolo F, Russo R, et al. SINEUPs: a new class of natural and synthetic antisense long non-coding RNAs that activate translation. \textit{RNA Biol}. 2015. \href{https://pubmed.ncbi.nlm.nih.gov/26259533/}{PubMed 26259533}.
+
+\bibitem{csfpet2023}
+Positron Emission Tomography Quantitative Assessment of Off-Target Whole-Body Biodistribution of I-124-Labeled Adeno-Associated Virus Capsids Administered to Cerebral Spinal Fluid. 2023. \href{https://pubmed.ncbi.nlm.nih.gov/37624734/}{PubMed 37624734}.
+
+\bibitem{pbpkprinciples2013}
+Jones H, Rowland-Yeo K. Basic concepts in physiologically based pharmacokinetic modeling in drug discovery and development. \textit{CPT Pharmacometrics Syst Pharmacol}. 2013;2:e63. \href{https://doi.org/10.1038/psp.2013.41}{doi:10.1038/psp.2013.41}.
+
+\bibitem{capsidml2021}
+Bryant DH, Bashir A, Sinai S, et al. Deep diversification of an AAV capsid protein by machine learning. \textit{Nat Biotechnol}. 2021;39:691--696. \href{https://doi.org/10.1038/s41587-020-00793-4}{doi:10.1038/s41587-020-00793-4}.
+
+\end{thebibliography}
+
+\end{document}

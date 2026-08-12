@@ -16,11 +16,22 @@ analysis, not fitted quantitative AAV organ PK constants.
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 from typing import Dict, Iterable, Tuple
 
 import numpy as np
 from scipy.integrate import solve_ivp
 import matplotlib.pyplot as plt
+
+MODEL_DIR = Path(__file__).resolve().parent
+if str(MODEL_DIR) not in sys.path:
+    sys.path.insert(0, str(MODEL_DIR))
+
+from aav_parameter_evidence import (
+    MOUSE_AAV9_BLOOD_HALF_LIFE_H,
+    MOUSE_AAV9_CAPSID_HALF_LIFE_H,
+    aav9_parameter_payload,
+)
 
 
 ORGANS = ["liver", "spleen", "kidney", "heart", "muscle", "lung", "brain", "rest"]
@@ -119,7 +130,7 @@ Q_SCALE = 0.05
 # These are the knobs that make the in-vivo AAV exposure become bell-shaped.
 # Smaller half-life -> faster decline after the peak.
 ENABLE_APPARENT_AAV_DECAY = True
-BLOOD_AAV_HALF_LIFE_H = 2.4        # radiolabeled AAV9 mouse blood half-life
+BLOOD_AAV_HALF_LIFE_H = MOUSE_AAV9_BLOOD_HALF_LIFE_H
 VASCULAR_AAV_HALF_LIFE_H = 9.0     # nonspecific loss from organ vascular space
 ISF_AAV_HALF_LIFE_H = 15.0         # degradation / lymphatic loss from tissue ISF
 LIVER_EXTRA_ISF_HALF_LIFE_H = 12.0  # liver uptake / RES-like loss from liver ISF
@@ -128,7 +139,7 @@ PLOT_DECAY_WINDOW_H = 48.0
 
 SAVE_FIGURES = True
 SHOW_FIGURES = False
-OUTPUT_DIR = Path("aav_pbpk_bell_outputs")
+OUTPUT_DIR = Path(__file__).resolve().parents[1] / "results" / "mouse_pbpk"
 
 # New in the refined version:
 # - "mechanistic" keeps the bell-shaped exposure but assigns clearance to
@@ -141,22 +152,12 @@ CLEARANCE_MODE = "mechanistic"  # allowed: "mechanistic" or "half_life_demo"
 RUN_DESIGN_SCENARIOS = True
 RUN_SPATIAL_PK_DEMO = True
 
-# Early intact/labeled-capsid biological half-life priors after IV AAV9.
-# Liver, heart, spleen, brain/CSF, and body values follow immune-naive NHP PET
-# estimates; blood follows mouse 64Cu-AAV9. Kidney/lung are explicit provisional
-# mouse-scale priors because the radiolabeled signal was near background by day 3.
-# These values describe early capsid PK, not episome or transgene persistence.
-NORMAL_AAV9_CAPSID_HALF_LIFE_H = {
-    "blood": 2.4,
-    "liver": 22.6,
-    "spleen": 22.9,
-    "kidney": 24.0,
-    "heart": 15.6,
-    "muscle": 48.7,
-    "lung": 18.0,
-    "brain": 24.8,
-    "rest": 34.0,
-}
+# Mouse IV AAV9 early intact/extracellular-capsid priors. Blood is the 5.0 h
+# unmodified AAV9 PET estimate from Seo et al.; the old 2.4 h number belongs to
+# tetracysteine-modified AAV9-TC. Organ values are recomputed from Wang et al.
+# Table S1 at import time. They are not episome or expression half-lives.
+NORMAL_AAV9_CAPSID_HALF_LIFE_H = dict(MOUSE_AAV9_CAPSID_HALF_LIFE_H)
+AAV9_PARAMETER_EVIDENCE = aav9_parameter_payload()
 
 
 CAPSID_PRESETS = {
@@ -256,7 +257,7 @@ def make_params() -> Dict[str, float | str]:
         # Kept for compatibility with the original script. The stronger decay
         # in this version mainly comes from k_clear_blood below.
         # Blood clearance is represented by k_clear_blood to avoid counting
-        # the calibrated 2.4 h blood half-life twice.
+        # the calibrated AAV9 blood half-life twice.
         "CL_blood": 0.0,
 
         # Organ vascular and interstitial effective volumes, mL
@@ -651,7 +652,7 @@ def rhs(t: float, y: np.ndarray, p: Dict[str, float | str]) -> list[float]:
         * (Epi_eff ** h)
         / (float(p["EC50_tx"]) ** h + Epi_eff ** h + 1e-30)
     )
-    tx = min(tx, 2.0)
+    tx = min(tx, float(p["k_tx"]))
     dM = tx - p["k_deg_m"] * M          # mRNA 一阶降解
     dP = p["k_tl"] * M - p["k_deg_p"] * P  # Protein 一阶降解
 

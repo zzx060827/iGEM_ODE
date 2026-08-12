@@ -1,0 +1,2929 @@
+{
+  "schema_version": "1.0",
+  "reference": "IV AAV9 in the same 70 kg exploratory PBPK model",
+  "regulatory_context": {
+    "zolgensma_label": {
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=68cd4f06-70e1-40d8-bedb-609ec0afa471",
+      "context": "Product-specific AAV9 IV dose is 1.1e14 vg/kg. Serious liver injury, thrombocytopenia, TMA and elevated troponin are monitored. This is context, not a universal threshold."
+    },
+    "fda_clinical_development": {
+      "url": "https://www.fda.gov/media/167536/download",
+      "context": "FDA examples link IV AAV to hepatotoxicity/TMA and intrathecal or intraparenchymal AAV to DRG or local neurotoxicity."
+    },
+    "fda_neurodegenerative_guidance": {
+      "url": "https://www.fda.gov/media/144886/download",
+      "context": "Product purity, potency, delivery-device compatibility, unintended immune responses and unwanted expression require product-specific assessment."
+    }
+  },
+  "important_limits": [
+    "The model has no calibrated exposure-to-ALT, TMA, troponin or DRG injury function.",
+    "Vector genome, capsid particle, empty/full ratio, promoter, payload, impurities, patient age and disease can change risk.",
+    "Relative exposure is suitable for prioritizing assays, not approving a dose."
+  ],
+  "screens": [
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "aav2",
+      "capsid": "AAV2",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.42070407433957635,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6991326789880372,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.3806382319841824,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.19270477818131276,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.50991057866272,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "aav5",
+      "capsid": "AAV5",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.6642826211646613,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7234397143408243,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.3423018219455187,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.21286639912459843,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.6922132652529638,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "aav8",
+      "capsid": "AAV8",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.7078065492873464,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.8792493093668787,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7746490726145823,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.16229290049555037,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 1.0617936996857744,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "aav9",
+      "capsid": "AAV9",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.0,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 1.0,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 1.0,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 1.0,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 1.0,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "aavrh10",
+      "capsid": "AAVrh.10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.8711611382649529,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.8270519662085887,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 1.0418629146380418,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 1.4752745973815888,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9445452108668505,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "php-eb",
+      "capsid": "PHP.eB",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.653725132011223,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.765155880634927,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7887058862813134,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 1.0124725689411034,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8687078506361509,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "cap-b10",
+      "capsid": "CAP-B10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.29759173917619197,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6235323057021036,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.6728219868992446,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 1.4586800260976662,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.7677780762845062,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "iv",
+      "route": "Peripheral intravenous",
+      "capsid_id": "lk03",
+      "capsid": "AAV-LK03",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 2.027441402096975,
+          "screening_priority": "higher-priority"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6295089196522201,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.47363698061555987,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.11933163953940253,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9218895191044862,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "aav2",
+      "capsid": "AAV2",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.3864121157931045,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6431945098535151,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.3504716635951374,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 324.6080705995177,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.46933605048486854,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "aav5",
+      "capsid": "AAV5",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.6104630441477747,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6657503492898166,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.315262709986501,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 322.7932743989432,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.6372944570907955,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "aav8",
+      "capsid": "AAV8",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.570215735898111,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.8087723749262027,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7129840263858409,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 326.56551224517835,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9770549544544378,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "aav9",
+      "capsid": "AAV9",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.9246963181375762,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.9256767471368658,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.9262100200996914,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 285.66295192125295,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9260317077825838,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "aavrh10",
+      "capsid": "AAVrh.10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.8070546027916912,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7670771420612867,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.9669158085203524,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 272.7099391434221,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8764333058749539,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "php-eb",
+      "capsid": "PHP.eB",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.604234107286377,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7082333219990911,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7305159976354914,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 285.67183520247164,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8044801502837484,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "cap-b10",
+      "capsid": "CAP-B10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.2755357611518653,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5782114540116328,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.6243570932167801,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 273.75421360434154,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.7124593903715779,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intrathecal",
+      "route": "Lumbar intrathecal",
+      "capsid_id": "lk03",
+      "capsid": "AAV-LK03",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.863077439449714,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.578609414121756,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.4356404193796319,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 331.0591770367824,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8476549290391068,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "aav2",
+      "capsid": "AAV2",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.2066900585343864,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.3460780751329594,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.1891980447764026,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.09585601170301122,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.2529926537573934,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "aav5",
+      "capsid": "AAV5",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.32633874238989036,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.35810600159381173,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.1701390023870105,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.10587678639146017,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.34331704080066555,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "aav8",
+      "capsid": "AAV8",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.0920760519774118,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5637311426640296,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.4978153250776498,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.10437460191303602,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.6814851517447956,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "aav9",
+      "capsid": "AAV9",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.6430160088701522,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6460788140576728,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.6475582688280179,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.648066216649912,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.646898173735751,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "aavrh10",
+      "capsid": "AAVrh.10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.5556442570836354,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5302472039697355,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.6696089492042908,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.9489192888569454,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.6064596089308071,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "php-eb",
+      "capsid": "PHP.eB",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.407372106104739,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.4797060092641457,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.49578084128405214,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.6369503516075516,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.5455902641427215,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "cap-b10",
+      "capsid": "CAP-B10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.18175657914107146,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.38300061486654136,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.4144359706252146,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.8992103467897021,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.4728336535774014,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intramuscular",
+      "route": "Deltoid intramuscular",
+      "capsid_id": "lk03",
+      "capsid": "AAV-LK03",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.1328826889350294,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.3526975346696577,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.2661485429575211,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.06710564007906958,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.5168785530282405,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "aav2",
+      "capsid": "AAV2",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.3834177907205554,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.638545959552434,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.34803873494244486,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 370.1638550651509,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.4660208166932306,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "aav5",
+      "capsid": "AAV5",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.6057402610873031,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6609225295864418,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.31306560894461805,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 368.46764864191533,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.6327667295370364,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "aav8",
+      "capsid": "AAV8",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.5585788873910245,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.8029541232793077,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7080018471253262,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 371.97685051913106,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9701237077339357,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "aav9",
+      "capsid": "AAV9",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.9174558723957179,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.9187893384207395,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.9195042750017894,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 333.237408471807,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9192490412028348,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "aavrh10",
+      "capsid": "AAVrh.10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.8006700707256991,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7613273870355899,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.9598743429196129,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 320.6598196768415,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8699797056385836,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "php-eb",
+      "capsid": "PHP.eB",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.5994292556368566,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7029437996819613,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7252238983827938,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 333.2418447132557,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.7985964567086161,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "cap-b10",
+      "capsid": "CAP-B10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.273337836887001,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5738712161812449,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.6198152822181371,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 321.6783775501782,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.7072662980643809,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracisternal",
+      "route": "Intra-cisterna magna",
+      "capsid_id": "lk03",
+      "capsid": "AAV-LK03",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.8494480053098077,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5744711576337773,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.4326245794178816,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 376.1593321308986,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8416574004595493,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "aav2",
+      "capsid": "AAV2",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.38927195361519407,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6482148529953342,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.3532872673162709,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 271.21815168049227,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.47306162955768116,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "aav5",
+      "capsid": "AAV5",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.6149634670317636,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.6709098846473015,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.3177772597588143,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 269.7078878231398,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.6423093730556939,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "aav8",
+      "capsid": "AAV8",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.5823213882498788,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.8151439606427241,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7187173020795874,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 272.8378751401611,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9848308121729082,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "aav9",
+      "capsid": "AAV9",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.9307071604722114,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.9319805719778773,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.9326680741429787,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 238.8063995373805,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.9324265177600223,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "aavrh10",
+      "capsid": "AAVrh.10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.8120172446845483,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7720495595100558,
+          "screening_priority": "reference-range"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.973351706522862,
+          "screening_priority": "reference-range"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 228.02114273172293,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8822102350871961,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "php-eb",
+      "capsid": "PHP.eB",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.6081157745951028,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7130547205905333,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7356216760405705,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 238.8184386924196,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8100588687666824,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "cap-b10",
+      "capsid": "CAP-B10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.2772217103251165,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5819647497386925,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.6285276730799568,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 228.89216897774247,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.7172109242213288,
+          "screening_priority": "lower-modeled-exposure"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "intracerebroventricular",
+      "route": "Intracerebroventricular",
+      "capsid_id": "lk03",
+      "capsid": "AAV-LK03",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.8777084196034988,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5832280339516286,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.4391966014690009,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 276.56972299176044,
+          "screening_priority": "route-specific-priority",
+          "route_note": "CSF delivery makes DRG/CNS safety assessment mandatory regardless of the whole-brain exposure ratio."
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 0.8544723493747424,
+          "screening_priority": "reference-range"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "aav2",
+      "capsid": "AAV2",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.2891367065827051,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.4822565610989306,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.2630373072376101,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.13322186433803823,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 4.2137720874207165,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "aav5",
+      "capsid": "AAV5",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.5206711023481784,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5682008978087839,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.26916170416986346,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.16742834843273854,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 3.247590974027925,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "aav8",
+      "capsid": "AAV8",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.1397528285386953,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5874800049345276,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.5183407680691338,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.10865217669064971,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 4.836478672316349,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "aav9",
+      "capsid": "AAV9",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.7111220059134652,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.7127458877163672,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7135974258402373,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.7139267079089165,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 4.299628460720266,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "aavrh10",
+      "capsid": "AAVrh.10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.6099943385373958,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5806273140685946,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.7324360398585873,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 1.0376227442797723,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 4.378817313474906,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "php-eb",
+      "capsid": "PHP.eB",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.4403507760548902,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.5172194908735267,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.533980494532268,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.6858350736740279,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 4.61895655627037,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "cap-b10",
+      "capsid": "CAP-B10",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 0.19441704386198785,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.40894573973453013,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.44206122199499776,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.9589066890467344,
+          "screening_priority": "reference-range"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 4.779113061677649,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    },
+    {
+      "route_id": "inhaled",
+      "route": "Inhaled / airway",
+      "capsid_id": "lk03",
+      "capsid": "AAV-LK03",
+      "dose_vg_per_kg": 40000000000000.0,
+      "dose_context_ratio_to_zolgensma_label": 0.36363636363636365,
+      "risk_domains": {
+        "liver": {
+          "organs": [
+            "liver"
+          ],
+          "hazard": "Hepatotoxicity and capsid/transgene-directed immune injury",
+          "monitoring": "ALT, AST, total bilirubin, albumin, PT/INR; liver histology and cytokines preclinically",
+          "modeled_exposure_relative_to_iv_aav9": 1.2868060397887318,
+          "screening_priority": "reference-range"
+        },
+        "renal_tma": {
+          "organs": [
+            "kidney",
+            "spleen"
+          ],
+          "hazard": "Complement-associated thrombotic microangiopathy and acute kidney injury",
+          "monitoring": "Platelet count, hemoglobin, creatinine, urinalysis, LDH/haptoglobin and complement activation markers",
+          "modeled_exposure_relative_to_iv_aav9": 0.3998552176974167,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cardiac": {
+          "organs": [
+            "heart"
+          ],
+          "hazard": "Cardiac injury signal",
+          "monitoring": "Troponin and cardiac assessment when biologically or clinically indicated",
+          "modeled_exposure_relative_to_iv_aav9": 0.3013946045128071,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "cns_drg": {
+          "organs": [
+            "brain"
+          ],
+          "hazard": "DRG or local CNS neurotoxicity, especially for CSF/local routes",
+          "monitoring": "Neurological examination, sensory endpoints, MRI, CSF markers and DRG histopathology in relevant animals",
+          "modeled_exposure_relative_to_iv_aav9": 0.07597421591014698,
+          "screening_priority": "lower-modeled-exposure"
+        },
+        "systemic_immune": {
+          "organs": [
+            "liver",
+            "spleen",
+            "lung",
+            "rest"
+          ],
+          "hazard": "Innate/adaptive immune activation and loss of efficacy",
+          "monitoring": "Pre-existing NAb, anti-capsid antibody/T cells, cytokines and complement; infection status",
+          "modeled_exposure_relative_to_iv_aav9": 5.111165710489061,
+          "screening_priority": "higher-priority"
+        }
+      },
+      "interpretation": "Exposure-priority screen only; it does not establish clinical safety or a no-adverse-effect level."
+    }
+  ]
+}

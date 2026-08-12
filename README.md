@@ -92,15 +92,41 @@ npm run build
 
 预测蛋白恢复率、65%阈值、人体衣壳倍率和联合方案评分仍需要目标基因、患者来源细胞及动物实验数据校准。使用结果时应同时查看证据来源和模型状态，避免将代理模型结果解释为临床疗效。
 
+## 复现模型
+
+```bash
+python -m pip install -r requirements.txt
+python model/export_parameter_registry.py
+python model/export_delivery_design_space.py \
+  --output sineup-delivery-atlas/public/data/model-results.json
+python model/export_safety_screen.py
+```
+
+上述脚本依次导出参数证据表、前端所需的 ODE/PBPK 轨迹及研究级安全筛查结果。完整参数表见
+[`model/data/model_parameter_registry.csv`](model/data/model_parameter_registry.csv)，其中每项参数均标注数值、单位、物种、证据类型、来源、选择理由、置信度和代码位置。
+
 ## 项目结构
 
-- `sineup-delivery-atlas/`：交互式网页平台；
-- `model/`：PBPK、细胞转导和人体多区域模型；
-- `aav_pbpk_outputs/`：模型导出的器官级结果；
-- `spatial_pk_demo_outputs/`：空间 PK 示例输出；
-- `docs/`：模型方法与改进说明。
+| 路径 | 内容 |
+|---|---|
+| `model/` | 当前使用的 ODE/PBPK、参数证据、批量导出器和安全筛查 |
+| `model/data/` | 衣壳文献数据与机器可读的完整参数注册表 |
+| `sineup-delivery-atlas/` | React/vinext 交互式疾病设计空间与人体热图 |
+| `docs/latex/`、`docs/pdf/` | 主报告、技术附录及其编译 PDF |
+| `docs/wiki/` | Attribution、Engineering、Contribution、Measurement 和 Safety 草稿 |
+| `docs/presentation/` | 简约中文汇报讲稿 |
+| `results/` | 经过整理的模型图和表格输出 |
+| `prototypes/` | 早期独立可视化原型 |
+| `archive/legacy/` | 为追溯保留、但不再作为运行入口的旧脚本 |
+| `releases/` | 可转移的演示压缩包 |
 
-更详细的模型假设和改进方向见 [`docs/aav_spatial_pk_refinement_report.md`](docs/aav_spatial_pk_refinement_report.md)。
+参数证据分为 `direct`（直接文献值）、`fitted`（由数据拟合）、`derived`（由已知量推导）、`scaled`（跨解剖或物种缩放）和 `assumed`（待实验校准的显式假设）。主报告、模型假设、局限性和湿实验闭环见
+[`docs/pdf/aav_sineup_spatial_pk_project_report.pdf`](docs/pdf/aav_sineup_spatial_pk_project_report.pdf) 与
+[`docs/pdf/ode_report.pdf`](docs/pdf/ode_report.pdf)。
+
+## 安全边界
+
+平台中的安全分数用于比较模型场景，不是临床安全剂量或不良事件概率。任何给药方案仍需结合组织学、临床化学、免疫原性、载体脱落和生物分布实验验证；详见 [`docs/wiki/safety.md`](docs/wiki/safety.md)。
 
 ---
 
@@ -192,12 +218,38 @@ The platform combines published evidence, GTEx/HPA/ClinGen data, and mechanistic
 
 Predicted protein restoration, the 65% threshold, human capsid multipliers, and combination scores still require calibration with target-specific, patient-derived cell, and animal data. Always inspect the evidence source and model status, and do not interpret surrogate results as clinical efficacy.
 
+## Reproduce the Model
+
+```bash
+python -m pip install -r requirements.txt
+python model/export_parameter_registry.py
+python model/export_delivery_design_space.py \
+  --output sineup-delivery-atlas/public/data/model-results.json
+python model/export_safety_screen.py
+```
+
+These commands export the parameter-evidence register, the ODE/PBPK trajectories consumed by the frontend, and the research-use safety screen. The complete registry is available at
+[`model/data/model_parameter_registry.csv`](model/data/model_parameter_registry.csv); every row records the value, unit, species, evidence class, source, rationale, confidence, and code location.
+
 ## Project Structure
 
-- `sineup-delivery-atlas/`: interactive web application;
-- `model/`: PBPK, cellular transduction, and human multiregion models;
-- `aav_pbpk_outputs/`: exported organ-level model results;
-- `spatial_pk_demo_outputs/`: spatial PK demonstration outputs;
-- `docs/`: modeling methods and refinement notes.
+| Path | Purpose |
+|---|---|
+| `model/` | Active ODE/PBPK models, parameter evidence, exporters, and safety screening |
+| `model/data/` | Capsid literature data and the machine-readable parameter registry |
+| `sineup-delivery-atlas/` | React/vinext disease design space and anatomical heatmap |
+| `docs/latex/`, `docs/pdf/` | Main report, technical appendix, and compiled PDFs |
+| `docs/wiki/` | Attribution, Engineering, Contribution, Measurement, and Safety drafts |
+| `docs/presentation/` | Concise Chinese presentation script |
+| `results/` | Curated model figures and tabular outputs |
+| `prototypes/` | Earlier standalone visualization prototypes |
+| `archive/legacy/` | Superseded scripts retained for provenance, not for current runs |
+| `releases/` | Portable demonstration archives |
 
-For detailed assumptions and future refinements, see [`docs/aav_spatial_pk_refinement_report.md`](docs/aav_spatial_pk_refinement_report.md).
+Parameter evidence is classified as `direct`, `fitted`, `derived`, `scaled`, or `assumed`. Detailed assumptions, limitations, and the proposed wet-lab feedback loop are documented in
+[`docs/pdf/aav_sineup_spatial_pk_project_report.pdf`](docs/pdf/aav_sineup_spatial_pk_project_report.pdf) and
+[`docs/pdf/ode_report.pdf`](docs/pdf/ode_report.pdf).
+
+## Safety Boundary
+
+The safety score compares modeled scenarios; it is not a clinical safe dose or an adverse-event probability. Any regimen requires histopathology, clinical chemistry, immunogenicity, shedding, and biodistribution validation. See [`docs/wiki/safety.md`](docs/wiki/safety.md).

@@ -1,6 +1,7 @@
 # AAV 全身递送、入胞与 Spatial PK 建模优化报告
 
-针对现有脚本 `/Volumes/zxzhu/iGEM_ODE/aav_pbpk_liver_plus_multilevel_kidney.py`。
+针对当前主模型 [`model/ode1.0.py`](../model/ode1.0.py)。最初位于外接卷的
+`aav_pbpk_liver_plus_multilevel_kidney.py` 已演化为本仓库中的可复现版本。
 
 ## 1. 你现在已经做对的部分
 
