@@ -27,8 +27,36 @@ test("server-renders the ODE-driven organ heatmap workspace", async () => {
   assert.match(html, /PBPK–空间 CNS–SINEUP ODE/);
   assert.match(html, /1328 个模型输出/);
   assert.match(html, /疾病设计空间/);
+  assert.match(html, /安全窗口/);
   assert.match(html, /正在载入人体多区域 ODE 数据/);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape/);
+});
+
+test("exports evidence-haircut safety and dose-window inputs for every scenario", async () => {
+  const file = new URL("../public/data/safety-screen.json", import.meta.url);
+  const payload = JSON.parse(await readFile(file, "utf8"));
+  assert.equal(payload.schema_version, "3.0");
+  assert.equal(payload.screens.length, 48);
+  assert.match(payload.dose_window_method.decision_rule, /protein >=65%/);
+  assert.ok(payload.reference_cases.roctavian_iv);
+  assert.ok(payload.reference_cases.aav8_hemophilia_iv);
+  assert.ok(payload.reference_cases.lk03_hemophilia_iv);
+  assert.ok(payload.reference_cases.glybera_im);
+  assert.ok(payload.reference_cases.aav2_cf_aerosol);
+  for (const screen of payload.screens) {
+    assert.ok(screen.conservative_contextual_upper_dose_vg > 0);
+    assert.ok(screen.uncertainty_factor > 0 && screen.uncertainty_factor <= 0.75);
+    assert.equal(Object.keys(screen.organ_exposure_margins).length, 8);
+    assert.equal(Object.keys(screen.efficacy_targets).length, 8);
+    assert.ok(Object.values(screen.efficacy_targets).every((target) => target.sineup_activity_factor === 2));
+    assert.ok(Object.values(screen.organ_exposure_margins).every((organ) =>
+      organ.conservative_reference_auc_isf_amount_vg_h > 0 && organ.conservative_margin_over_current > 0));
+  }
+  const itAav9 = payload.screens.find((screen) => screen.route_id === "intrathecal" && screen.capsid_id === "aav9");
+  assert.equal(itAav9.primary_benchmark_id, "itvisma_it");
+  assert.equal(itAav9.inference_class, "approved-same-capsid-route");
+  assert.ok(itAav9.conservative_contextual_upper_dose_vg < payload.current_scenario.dose_vg);
+  assert.ok(itAav9.efficacy_targets.brain.anchor_relative_episome > 0);
 });
 
 test("includes lazy human model shell and social metadata", async () => {

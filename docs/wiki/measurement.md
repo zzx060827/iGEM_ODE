@@ -59,3 +59,50 @@ dataset comparing AAV9 and one target-biased capsid in three organs. Publishing
 the raw table, units, recovery controls, fitting script and failed measurements
 would make the work reproducible and useful to future teams even before full
 therapeutic validation.
+
+---
+
+# 中文版本：如何使模型成为可检验的科学工具
+
+Measurement 是模型与可靠生物学结论之间的桥梁。项目目前还没有完整的湿实验校准数据，因此本页定义的是闭合模型—实验循环所需的最低测量体系，而不是宣称这些测量已经全部完成。
+
+## 不同被测量必须分开
+
+| 生物学量 | 推荐检测方法 | 建议单位 | 对应模型状态或参数 |
+|---|---|---|---|
+| 给入的完整载体剂量 | ddPCR，并结合衣壳总数和 full/empty 表征 | vg、capsid particles、full:empty ratio | `Dose_in` 与输入不确定性 |
+| 循环载体基因组 | 经基质验证的 qPCR/ddPCR | vg/mL 血液或血浆 | 血液清除和器官输入 |
+| 组织载体基因组 | qPCR/ddPCR，并按组织质量和细胞数归一化 | vg/g、vg/diploid genome | 器官血管/ISF 与内化载体的总和 |
+| 完整或带标签衣壳 | ELISA、成像或经过验证的标记方法 | capsid/mL、%ID/g | 早期衣壳 PK，而不是 episome 持久性 |
+| 细胞类型摄取 | 共定位成像或分选细胞 ddPCR | 阳性比例、vg/cell | 受体容量和细胞可及性 |
+| 核内/episomal 载体 | 核分离、核酸酶耐受或环状基因组检测 | episome/cell | `Nss`、`Nds`、`Epi` |
+| SINEUP RNA 与靶 mRNA | 使用构建体特异引物的 RT-qPCR | copies/cell 或相对表达 | RNA 生成与降解 |
+| 靶蛋白 | 定量 western、ELISA 或功能检测 | 浓度或校准相对单位 | 翻译增益与蛋白周转 |
+| 免疫/安全标志物 | NAb、抗衣壳 T 细胞、细胞因子、补体、ALT/AST、血小板、肌酐、肌钙蛋白 | 检测特异的 SI/临床单位 | 安全优先级层 |
+
+载体基因组、衣壳、episome、RNA 和蛋白回答的是不同问题，不能共用同一个“半衰期”。组织 qPCR 也可能同时包含血管残留、ISF 和已内化基因组，因此需要灌流、分级或成像数据辅助解释。
+
+## 最低时间序列
+
+初步实验可在 0.5 h、2 h、8 h、24 h、72 h 和 7 d 测量载体/衣壳，并在 7 d、28 d 或疾病适合的更晚时点测量 episome、RNA 和蛋白。每组最好至少有 3 个生物学重复；技术重复只能说明检测精密度，不能替代生物学重复。
+
+## 对照与校准
+
+- 未处理基质和无模板对照；
+- 已知载体加标回收率与稀释线性；
+- 所有实验共享一个参考衣壳/给药途径；
+- 在可行时测定 full/empty ratio 和基因组完整性；
+- 组织处理回收率对照；
+- 标准曲线与定量下限；
+- 盲法图像分割和预先定义的解剖区域；
+- 同时报告原始观测、重复结构、不确定性和拟合均值。
+
+## 建议的拟合与验证划分
+
+用早期血液和组织数据估计运输与损失参数；用细胞类型和亚细胞数据估计摄取与逃逸；用后期 episome/RNA/蛋白数据估计表达和持久性。至少保留一个时间点、剂量或衣壳作为预测集，不能全部用于拟合。
+
+第一个量化成功标准不应是“曲线看起来完美”，而应事先声明：模型只用一部分数据校准后，能够在给定误差带内预测保留条件，并且在考虑不确定性后正确排序受测方案。
+
+## 本赛季可完成的 Measurement Contribution
+
+一个规模小但有说服力的交付物，是完成“检测—模型状态”实验方案，并生成一份 AAV9 与一个靶器官偏好衣壳在三个器官中的先导数据。公开原始表格、单位、回收率对照、拟合脚本和失败测量，即使还没有完成治疗验证，也能够使工作可复现并帮助未来团队。

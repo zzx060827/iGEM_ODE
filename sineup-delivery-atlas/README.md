@@ -9,6 +9,8 @@ the parent `iGEM_ODE` repository, not a standalone clinical calculator.
 - expandable disease-to-gene library with Chinese/English interface;
 - capsid design space: organ specificity versus effective duration;
 - route- and capsid-selectable reference-human anatomical heat map;
+- dose-adjustable safety–efficacy windows with organ AUC margins and SINEUP
+  response duration;
 - absolute exposure and within-capsid relative colour mapping;
 - evidence, species, model-status and source labels.
 
@@ -21,9 +23,13 @@ The page reads files under `public/data/`:
 | `model-results.json` / `.csv` | `../model/export_delivery_design_space.py` |
 | `human-spatial-results.json` | `../model/export_delivery_design_space.py` |
 | `safety-screen.json` | `../model/export_safety_screen.py` |
+| `aav_safety_organ_margins.csv` | `../model/export_safety_screen.py` |
+| `aav_safety_evidence.csv` | `../model/export_safety_screen.py` |
 | `gene-expression.json` | `scripts/fetch-gene-expression.mjs` |
 
-The browser filters and visualises these outputs; it does not refit the ODE.
+The browser filters the PBPK exports and runs the compact three-state SINEUP
+PD model locally for interactive dose exploration; it does not refit PBPK
+parameters or claim a clinical NOAEL.
 
 ## Local development
 

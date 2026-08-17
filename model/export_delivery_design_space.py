@@ -43,7 +43,11 @@ CAPSID_PRIORS = {
         "persistence_factor": 1.00,
         "tropism": {"liver": 2.20, "spleen": 0.75, "kidney": 0.90, "heart": 0.72, "muscle": 0.95, "lung": 0.65, "brain": 0.14, "rest": 0.90},
         "source": "https://doi.org/10.1016/j.xphs.2023.10.005",
-        "additional_sources": ["https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/"],
+        "additional_sources": [
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/",
+            "https://pubmed.ncbi.nlm.nih.gov/18414476/",
+            "https://pubmed.ncbi.nlm.nih.gov/39863928/",
+        ],
     },
     "aav9": {
         "label": "AAV9", "evidence": "strong", "species": "mouse + NHP",
@@ -53,6 +57,8 @@ CAPSID_PRIORS = {
         "additional_sources": [
             "https://pmc.ncbi.nlm.nih.gov/articles/PMC7769048/",
             "https://pmc.ncbi.nlm.nih.gov/articles/PMC11919325/",
+            "https://pubmed.ncbi.nlm.nih.gov/18414476/",
+            "https://pubmed.ncbi.nlm.nih.gov/39863928/",
         ],
     },
     "aavrh10": {
@@ -93,9 +99,9 @@ CAPSID_PRIORS = {
 
 TARGETS = {
     "CNS": {"model_organ": "brain", "cellular_states": ("C_Epi", "C_M", "C_P"), "episome_half_life_days": 365.0, "route": "IV"},
-    "Liver": {"model_organ": "liver", "cellular_states": ("Epi", "M", "P"), "episome_half_life_days": 120.0, "route": "IV"},
+    "Liver": {"model_organ": "liver", "cellular_states": ("Epi", "M", "P"), "episome_half_life_days": 1095.0, "route": "IV"},
     "Heart": {"model_organ": "heart", "episome_half_life_days": 300.0, "route": "IV"},
-    "Muscle": {"model_organ": "muscle", "episome_half_life_days": 365.0, "route": "IV"},
+    "Muscle": {"model_organ": "muscle", "episome_half_life_days": 1460.0, "route": "IV"},
     "Kidney": {"model_organ": "kidney", "cellular_states": ("K_Epi", "K_M", "K_P"), "episome_half_life_days": 90.0, "route": "IV"},
     # The current PBPK has no eye compartment. Eye is an explicit local-route
     # surrogate based on the brain barrier compartment plus ocular capsid priors.

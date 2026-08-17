@@ -271,16 +271,21 @@ REGIONS: dict[str, Region] = {
     "brain_cerebellum": _region("Cerebellum", "brain", 0.014, 22, 125, 0.18, 0.035, 54, 365),
     "brainstem_spinal": _region("Brainstem and spinal cord", "brain", 0.010, 18, 120, 0.10, 0.024, 72, 365),
     "heart": _region("Heart", "heart", 0.040, 110, 230, 20.0, 0.70, 24, 300),
-    "liver": _region("Liver", "liver", 0.060, 420, 1050, 45.0, 1.60, 8, 120),
+    # Human liver biopsy studies have demonstrated transcriptionally competent
+    # AAV episomes 2.6-4.1 years after dosing. 1095 d is a conservative
+    # literature-constrained effective half-life prior, not a direct estimate.
+    "liver": _region("Liver", "liver", 0.060, 420, 1050, 45.0, 1.60, 8, 1095),
     "spleen": _region("Spleen", "spleen", 0.030, 45, 115, 35.0, 1.25, 8, 150),
     "kidney_left_cortex": _region("Left kidney cortex", "kidney", 0.060, 55, 85, 30.0, 0.85, 18, 90),
     "kidney_left_medulla": _region("Left kidney medulla", "kidney", 0.035, 32, 58, 18.0, 0.70, 24, 90),
     "kidney_right_cortex": _region("Right kidney cortex", "kidney", 0.060, 55, 85, 30.0, 0.85, 18, 90),
     "kidney_right_medulla": _region("Right kidney medulla", "kidney", 0.035, 32, 58, 18.0, 0.70, 24, 90),
-    "muscle_injected_arm": _region("Injected-side arm muscle", "muscle", 0.012, 38, 420, 8.0, 0.55, 30, 365),
-    "muscle_contralateral_arm": _region("Contralateral arm muscle", "muscle", 0.012, 38, 420, 8.0, 0.55, 36, 365),
-    "muscle_trunk": _region("Trunk muscle", "muscle", 0.056, 175, 2900, 7.0, 0.55, 36, 365),
-    "muscle_legs": _region("Leg muscle", "muscle", 0.090, 280, 5000, 7.0, 0.55, 36, 365),
+    # Human muscle biopsies show circular, transcriptionally competent AAV
+    # episomes persisting for at least four years after intramuscular dosing.
+    "muscle_injected_arm": _region("Injected-side arm muscle", "muscle", 0.012, 38, 420, 8.0, 0.55, 30, 1460),
+    "muscle_contralateral_arm": _region("Contralateral arm muscle", "muscle", 0.012, 38, 420, 8.0, 0.55, 36, 1460),
+    "muscle_trunk": _region("Trunk muscle", "muscle", 0.056, 175, 2900, 7.0, 0.55, 36, 1460),
+    "muscle_legs": _region("Leg muscle", "muscle", 0.090, 280, 5000, 7.0, 0.55, 36, 1460),
     "gut": _region("Gastrointestinal tract", "rest", 0.140, 310, 1050, 18.0, 0.65, 20, 120),
     "skin_adipose": _region("Skin and adipose", "rest", 0.080, 230, 7200, 4.0, 0.35, 60, 180),
     "bone_marrow": _region("Bone and marrow", "rest", 0.050, 180, 2200, 5.0, 0.40, 48, 240),

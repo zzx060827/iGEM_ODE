@@ -118,11 +118,11 @@ DOSE_VG = 1e12
 ADMINISTRATION = "infusion"  # allowed: "infusion" or "bolus"
 INFUSION_DURATION_MIN = 10.0
 
-# In this one-central-blood toy model, using raw CO makes all vascular
-# concentrations equilibrate within seconds. Q_SCALE converts CO into an
-# effective central-organ exchange rate. For the original raw-flow behavior,
-# set Q_SCALE = 1.0. For smoother iGEM-demo curves, try 0.01 to 0.10.
-Q_SCALE = 0.05
+# In this one-central-blood reduced-order model, raw cardiac output would make
+# all vascular concentrations equilibrate within seconds. Keep the intended
+# pulmonary exchange rate explicit and derive the dimensionless multiplier
+# from physiological cardiac output inside ``make_params``.
+EFFECTIVE_LUNG_EXCHANGE_ML_H = 1.25
 
 # ------------------------------------------------------------------
 # Apparent extracellular AAV decay controls
@@ -222,8 +222,12 @@ PROMOTER_PRESETS = {
 # Model parameters
 # ---------------------------------------------------------------------
 def make_params() -> Dict[str, float | str]:
-    co = 25.0  # mL/h, approximate cardiac output for a 25 g mouse
-    q_scale = Q_SCALE
+    # Reference cardiac output for an unanesthetized 25 g mouse. The previous
+    # 25 mL/h value was an effective exchange rate, not a physiological cardiac
+    # output. Keep the historical 1.25 mL/h lung exchange rate by separating
+    # physiology from the explicit reduced-order exchange multiplier.
+    co = 840.0  # mL/h (14 mL/min; Brown et al. 1997 reference mean)
+    q_scale = EFFECTIVE_LUNG_EXCHANGE_ML_H / co
 
     if CLEARANCE_MODE == "mechanistic":
         # Early capsid-PK calibration. Organ-specific apparent loss is split
@@ -261,18 +265,21 @@ def make_params() -> Dict[str, float | str]:
         "CL_blood": 0.0,
 
         # Organ vascular and interstitial effective volumes, mL
-        "V_liver_v": 0.14,
-        "V_liver_isf": 0.22,
+        # Vascular and interstitial volumes use the 20 g mouse large-protein
+        # PBPK system parameters in Shah & Betts, Table 6. These are
+        # physiological spaces; they are not AAV-specific fitted values.
+        "V_liver_v": 0.095,
+        "V_liver_isf": 0.19,
         "V_spleen_v": 0.01,
         "V_spleen_isf": 0.02,
-        "V_kidney_v": 0.05,
-        "V_kidney_isf": 0.08,
-        "V_heart_v": 0.012,
-        "V_heart_isf": 0.025,
-        "V_muscle_v": 0.4,
-        "V_muscle_isf": 1.2,
-        "V_lung_v": 0.08,
-        "V_lung_isf": 0.04,
+        "V_kidney_v": 0.03,
+        "V_kidney_isf": 0.101,
+        "V_heart_v": 0.007,
+        "V_heart_isf": 0.019,
+        "V_muscle_v": 0.15,
+        "V_muscle_isf": 1.032,
+        "V_lung_v": 0.0191,
+        "V_lung_isf": 0.057,
         "V_brain_v": 0.035,
         "V_brain_isf": 0.08,
         "V_rest_v": 0.7,

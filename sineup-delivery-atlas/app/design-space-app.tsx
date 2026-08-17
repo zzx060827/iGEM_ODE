@@ -16,6 +16,7 @@ import {
   Info,
   Languages,
   Search,
+  ShieldCheck,
   Sigma,
   Target,
 } from "lucide-react";
@@ -24,6 +25,7 @@ import modelPayload from "../public/data/model-results.json";
 import expressionPayload from "../public/data/gene-expression.json";
 import { diseases, type DiseaseRecord, type Language, type Organ } from "./disease-data";
 import { OrganHeatmap } from "./organ-heatmap";
+import { SafetyDashboard } from "./safety-dashboard";
 
 type Evidence = "strong" | "medium" | "exploratory";
 type ModelPoint = {
@@ -118,10 +120,11 @@ const capsidLabels = Object.fromEntries(
 
 const copy = {
   zh: {
-    subtitle: "疾病驱动的 AAV 空间递送设计",
+    subtitle: "可视化 AAV 空间递送设计平台",
     status: `PBPK–空间 CNS–SINEUP ODE · ${modelOutputCount} 个模型输出`,
     designNav: "疾病设计空间",
     heatmapNav: "器官热图",
+    safetyNav: "安全窗口",
     disease: "疾病",
     gene: "缺失基因",
     location: "递送位置",
@@ -129,10 +132,10 @@ const copy = {
     search: "搜索疾病、基因或位点",
     noResult: "没有匹配结果",
     geneCount: "个靶基因",
-    eligibility: "疾病资格首先检查单倍剂量不足证据、正常等位基因转录本和可干预治疗窗口。",
+    eligibility: "首先检查单倍剂量不足证据、正常等位基因转录本和可干预治疗窗口。",
     designSpace: "ODE 设计空间",
     candidate: "递送候选",
-    chartHelp: "每种衣壳均重新求解 PBPK、细胞转导和 SINEUP-PD；点击点查看状态、参数和来源。",
+    chartHelp: "点击点查看状态、参数和来源。",
     strong: "较强",
     medium: "中等",
     exploratory: "探索性",
@@ -175,7 +178,7 @@ const copy = {
     persistenceFormula: "持久性",
     balance: "最大质量守恒误差",
     generated: "模型生成时间",
-    disclaimer: "研究级设计工具，不是临床剂量建议。Eye 当前使用局部给药屏障代理；骨髓与周围神经疾病用于显示下一步需要增加的 PBPK 器官室。",
+    disclaimer: "本平台是设计工具，暂无法提供临床剂量建议。Eye 当前使用局部给药屏障代理；骨髓与周围神经疾病用于显示下一步需要增加的 PBPK 器官室。",
     expressionTitle: "正常组织表达证据",
     targetTpm: "靶器官 GTEx 中位 TPM",
     topTissue: "GTEx 最高组织",
@@ -188,14 +191,15 @@ const copy = {
     coverageScore: "加权覆盖分数",
     coveredGenes: "覆盖基因",
     unmodeledGenes: "尚无对应器官 ODE",
-    combinationNote: "双方案只有在校正侵入性、第二次给药负担和衣壳免疫风险后仍明显改善覆盖时才会出现。当前每个方案按完整参考剂量独立求解，尚未做总剂量拆分或免疫相互作用 ODE，因此不是临床联合用药建议。",
+    combinationNote: "双方案只有在校正侵入性、第二次给药负担和衣壳免疫风险后仍明显改善覆盖时才会出现。",
     dataSource: "数据库来源",
   },
   en: {
-    subtitle: "Disease-guided AAV spatial delivery design",
+    subtitle: "Visualizing AAV spatial delivery design platform",
     status: `PBPK–spatial CNS–SINEUP ODE · ${modelOutputCount} model outputs`,
     designNav: "Disease design space",
     heatmapNav: "Organ heatmap",
+    safetyNav: "Safety window",
     disease: "Disease",
     gene: "Deleted gene",
     location: "Delivery site",
@@ -206,7 +210,7 @@ const copy = {
     eligibility: "Eligibility starts with dosage evidence, a remaining normal transcript, and an actionable treatment window.",
     designSpace: "ODE design space",
     candidate: "delivery candidates",
-    chartHelp: "Every capsid re-solves PBPK, cellular transduction and SINEUP-PD. Select a point to inspect states, parameters and provenance.",
+    chartHelp: "Select a point to inspect states, parameters and provenance.",
     strong: "Strong",
     medium: "Moderate",
     exploratory: "Exploratory",
@@ -249,7 +253,7 @@ const copy = {
     persistenceFormula: "Persistence",
     balance: "Maximum mass-balance error",
     generated: "Model generated",
-    disclaimer: "Research design tool, not clinical dosing guidance. Eye currently uses a local-route barrier surrogate; marrow and peripheral-nerve records expose PBPK compartments still to be added.",
+    disclaimer: "This platform is a research design tool, not clinical dosing guidance. Eye currently uses a local-route barrier surrogate; marrow and peripheral-nerve records expose PBPK compartments still to be added.",
     expressionTitle: "Normal-tissue expression evidence",
     targetTpm: "Target-organ GTEx median TPM",
     topTissue: "Top GTEx tissue",
@@ -262,8 +266,7 @@ const copy = {
     coverageScore: "Weighted coverage score",
     coveredGenes: "Covered genes",
     unmodeledGenes: "No matching organ ODE",
-    combinationNote: "A dual plan appears only when coverage improves after penalties for invasiveness, a second administration and capsid immune risk. Each agent is currently solved independently at the full reference dose; total-dose splitting and immune-interaction ODEs are not yet modeled, so this is not clinical combination-dosing guidance.",
-    dataSource: "Database source",
+    combinationNote: "A dual plan appears only when coverage improves after penalties for invasiveness, a second administration and capsid immune risk.",
   },
 };
 
@@ -407,7 +410,7 @@ function recommendRegimen(records: DiseaseRecord[]): RegimenRecommendation {
 export function DesignSpaceApp() {
   const diseaseListRef = useRef<HTMLDivElement>(null);
   const [language, setLanguage] = useState<Language>("zh");
-  const [activeView, setActiveView] = useState<"design" | "heatmap">("heatmap");
+  const [activeView, setActiveView] = useState<"design" | "heatmap" | "safety">("heatmap");
   const t = copy[language];
   const [query, setQuery] = useState("");
   const [diseaseId, setDiseaseId] = useState("whs-nsd2");
@@ -481,6 +484,7 @@ export function DesignSpaceApp() {
           <nav className="view-switch" aria-label="Primary view">
             <button type="button" className={activeView === "design" ? "active" : ""} onClick={() => setActiveView("design")}><Target size={14} />{t.designNav}</button>
             <button type="button" className={activeView === "heatmap" ? "active" : ""} onClick={() => setActiveView("heatmap")}><Activity size={14} />{t.heatmapNav}</button>
+            <button type="button" className={activeView === "safety" ? "active" : ""} onClick={() => setActiveView("safety")}><ShieldCheck size={14} />{t.safetyNav}</button>
           </nav>
           <div className="status-line"><span className="status-dot" />{t.status}</div>
           <div className="language-switch" aria-label="Language">
@@ -491,7 +495,7 @@ export function DesignSpaceApp() {
         </div>
       </header>
 
-      {activeView === "heatmap" ? <OrganHeatmap language={language} /> : <>
+      {activeView === "heatmap" ? <OrganHeatmap language={language} /> : activeView === "safety" ? <SafetyDashboard language={language} /> : <>
       <section className="context-strip" aria-label="Design context">
         <div><span>{t.disease}</span><strong>{disease.name[language]}</strong></div>
         <ChevronRight size={16} aria-hidden="true" />
